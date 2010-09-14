@@ -2,15 +2,21 @@
 #include <stdio.h>
 #include <string.h>
 
-char* keyboardInput(char[]);
-
+char* keyboardInput();
+int CmpP2S(char *, char[]);
+void handler_readme();
 void main () {
+	int bufSize= 10;
 	char *BufferCMP= NULL;
-	BufferCMP = keyboardInput("GG");
-	
+	int truth = 0;
+	BufferCMP = keyboardInput();
+	truth = CmpP2S(BufferCMP,"JJ");	
+	printf("\ntruth:%d", truth);
+	handler_readme();
+	sys_req(READ,TERMINAL,BufferCMP,&bufSize);
 }
 
-char* keyboardInput (char Word[]){
+char* keyboardInput (){
 	char *Buffer = NULL;
 	char *BufferCMP= NULL;
 	int WordSize;
@@ -35,6 +41,14 @@ char* keyboardInput (char Word[]){
 		}
 		i++;
 	}
+	return BufferCMP;
+}
+int CmpP2S(char *BufferCMP, char Word[]){
+	int WordSize;
+	int Temp;
+	int bufSize= 10;
+	int flag;
+	int i;
 	WordSize = sizeof(Word)-1;
 	i= 0;
 	flag = 0;
@@ -50,14 +64,16 @@ char* keyboardInput (char Word[]){
 	//printf("%d",flag);
 	if(flag == 0){
 		printf("\nzero!");
-		sys_req(READ,TERMINAL,Buffer,&bufSize);
+		sys_req(READ,TERMINAL,BufferCMP,&bufSize);
+		return 1;
 	}
 	else{
 		printf("\nnot 0");
-		sys_req(READ,TERMINAL,Buffer,&bufSize);
+		sys_req(READ,TERMINAL,BufferCMP,&bufSize);
+		return 0;
 	}
-
-
-
-	return BufferCMP;
 }
+void handler_readme(){
+	printf("Readme");
+	}
+	
