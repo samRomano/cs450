@@ -16,7 +16,7 @@ char prompt[5] = ":>";
 
 void main () {
 	char *Buffer= NULL;
-	int truth = 0;
+	//int truth = 0;
 	/*Buffer = keyboardInput();
 	truth = cmpP2S(Buffer,"OOOKKKK");	
 	printf("truth:%d", truth);
@@ -190,17 +190,43 @@ void handler_readme(){
 
 void handler_display_mpx(){
 	char *Buffer= NULL;
-	long* j = 5;
-	int error;
+	char BufferArray[80] = {0};
+	char currentFile[40];
+	long j = 0;
+	int error, i = 0;
+	int nameSize = 40;
 	printf("\nWelcome to MPX");
 	printf("\nPlease enter the directory to be opened\n");
 	Buffer = keyboardInput();
-	error = sys_open_dir(Buffer);
-	printf("%d",error);
-	error = sys_get_entry("fluffy",5,j);
-	printf("\n%d",error);
-	error = sys_close_dir();
-	printf("\n%d",error);
+	while(i<sizeOfPointer(Buffer)){
+		BufferArray[i] = Buffer[i];
+		i++;
+	}
+	error = sys_open_dir(BufferArray);
+	//errorCheck(error);
+	printf("%s",BufferArray);
+	if(error ==0){
+		i = 0;
+		while(error == 0){
+			error = sys_get_entry(currentFile,nameSize,&j);
+			if(error == 0){
+				i++;
+				printf("\nFilename:%s       \tBuffersize:%d\tFile Size:%ld",currentFile,nameSize,j);
+			}
+			//printf("\n%d",error);
+		}
+		if(error != -113){
+			//errorCheck(error);
+		}
+		else{
+			error = sys_close_dir();
+			//errorCheck(error);
+			//printf("\n%d",error);
+			if(i == 0){
+			printf("No MPX files are in that directory\n");
+			}
+		}
+	}
 }
 int sizeOfPointer(char *Buffer){
 	int i = 0;
