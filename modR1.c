@@ -26,7 +26,6 @@ int handler_get_Date(void);
 int handler_set_Date(void);
 void handler_display_MPX();
 void handler_terminate_MPX(void);
-void handler_readme();
 
 char* keyboardInput2(int);
 char* keyboardInput();
@@ -36,14 +35,13 @@ int sizeOfPointer(char*);
 
 
 /******** Parameter List ********/
-int version = 0.4; 							//Current MPX Version #
-int comDone = 0;							//Command Handler Loop Indictor - Indicates whether the user is ready to terminate the program.
-char *userInput;							//Current User Input
-char *userCommand;
-int error = 0;								//Variable for Error Handling
+int version = 0.4.2; 							//Current MPX Version #
+int comDone = 0;								//Command Handler Loop Indictor - Indicates whether the user is ready to terminate the program.
+char *userCommand;								//Current User Command
+int error = 0;									//Variable for Error Handling
 
-int bufSize = 80;
-char prompt[5] = ":>";
+int bufSize = 80;								//User Command Buffer Size
+char prompt[5] = ":>";							//Current Prompt
 						    
 char *historyList[historySize];
 int historyQueue_Head = 0;
@@ -53,26 +51,22 @@ int historyCounter = 0;
 
 /******** Main ********/
 void main(){
-	sys_init(MODULE_R1);			    	//1. Initialize
-	commandHandler();				    	//2. Call commandHandler function
+	sys_init(MODULE_R1);			    		//1. Initialize
+	commandHandler();				    		//2. Call commandHandler function
 }//end main
 
 
 /******** Command Handler ********/
 void commandHandler(){
-	displayWelcome();						//2.1 Display the Welcome Message
+	displayWelcome();							//2.1 Display the Welcome Message
 
-	while(comDone !=1){						//2.2 Begin While Loop for User Commands
-		commandPrompt();					//2.2.1 Request for User Input
+	while(comDone !=1){							//2.2 Begin While Loop for User Commands
 		
-		userCommand = keyboardInput();      //2.2.2 Accept command from User
+		userCommand = keyboardInput();      	//2.2.1 Request User Input & Accept Command from User
 		printf("\n");
 		printf("The userCommand is: %s\n", *userCommand); //test1
 		
-		cmpP2S(userCommand, ")
-		
-		//Temporary Decision Statement
-		if(cmpP2S(userCommand, "help") == 1){
+		if(cmpP2S(userCommand, "help") == 1){	//2.2.2 Decision Statement
 			handler_help();
 		} else if(cmpP2S(userCommand, "version") == 1){
 			handler_version();
@@ -98,25 +92,205 @@ void commandHandler(){
 
 
 /******** Command Handler Functions ********/
+//Displays Welcome Message
 void displayWelcome(){
 	printf("Welcome to the Functional Fresco MPX OS.\n\n");
 }//end displayWelcome
 
-void commandPrompt(){
-	printf("Please enter a command to be executed: ");
-	printf(">");
-}//end commandPrompt
+//Gets User Input from Keyboard - Buffer Size=80
+char* keyboardInput (){
+	char *Buffer= NULL;
+	char *Buffer2 = NULL;
+	int bufSize2 = 0;
+	int WordSize;
+	int Temp;
+	int flag;
+	int i = 0;
+	int j = 0;
+	if(bufSize2<1){
+		printf("%s",prompt);
+		sys_req(READ,TERMINAL,Buffer2,&bufSize);
 
+		while(i<bufSize){
+			Temp = Buffer2[i];
+			if(Temp==10){
+				break;
+			}
+			else{
+				if(Temp >=47 && Temp <59|| Temp >=65 && Temp<91 || Temp >= 92&& Temp < 93 || Temp >=97 && Temp <123){
+					//printf("\nc:%c b:%c",Buffer[j],Temp);
+					Buffer[j] = Buffer2[i];
+					j++;
+					//printf("%d",j);
+				}
+			}
+			i++;
+		}
+		return Buffer;
+	}
+	else{
+		printf("%s",prompt);
+		sys_req(READ,TERMINAL,Buffer2,&bufSize2);
+
+		while(i<bufSize2){
+			Temp = Buffer2[i];
+			if(Temp==10){
+				break;
+			}
+			else{
+				if(Temp >=47 && Temp <59|| Temp >=65 && Temp<91 || Temp >= 92&& Temp < 93 || Temp >=97 && Temp <123){
+					//printf("\nc:%c b:%c",Buffer[j],Temp);
+					Buffer[j] = Buffer2[i];
+					j++;
+					//printf("%d",j);
+				}
+			}
+			i++;
+		}
+		return Buffer;
+	}
+}
+
+//Gets User Input from Keyboard - Set Buffer Size
+char* keyboardInput2 (int bufSize2){
+	char *Buffer= NULL;
+	char *Buffer2 = NULL;
+	int WordSize;
+	int Temp;
+	int flag;
+	int i = 0;
+	int j = 0;
+	if(bufSize2<1){
+		printf("%s",prompt);
+		sys_req(READ,TERMINAL,Buffer2,&bufSize);
+
+		while(i<bufSize){
+			Temp = Buffer2[i];
+			if(Temp==10){
+				break;
+			}
+			else{
+				if(Temp >=47 && Temp <59|| Temp >=65 && Temp<91 || Temp >= 92&& Temp < 93 || Temp >=97 && Temp <123){
+					//printf("\nc:%c b:%c",Buffer[j],Temp);
+					Buffer[j] = Buffer2[i];
+					j++;
+					//printf("%d",j);
+				}
+			}
+			i++;
+		}
+		return Buffer;
+	}
+	else{
+		printf("%s",prompt);
+		sys_req(READ,TERMINAL,Buffer2,&bufSize2);
+
+		while(i<bufSize2){
+			Temp = Buffer2[i];
+			if(Temp==10){
+				break;
+			}
+			else{
+				if(Temp >=47 && Temp <59|| Temp >=65 && Temp<91 || Temp >= 92&& Temp < 93 || Temp >=97 && Temp <123){
+					//printf("\nc:%c b:%c",Buffer[j],Temp);
+					Buffer[j] = Buffer2[i];
+					j++;
+					//printf("%d",j);
+				}
+			}
+			i++;
+		}
+		return Buffer;
+	}
+}
+
+//Compares User Input to String (1 True, 0 False)
+int cmpP2S(char *Buffer, char Word[]){
+	int WordSize, BufferSize;
+	int Temp;
+	int flag= 0;
+	int i = 0;
+	BufferSize = sizeOfPointer(Buffer);
+	WordSize = sizeOfArray(Word);
+	//printf("\n\n%d",WordSize);
+	if(WordSize <1){
+		//error word to short
+		printf("error 1");
+		return -1;
+	}
+	else{
+		if(BufferSize>WordSize){
+			printf(">");
+			return 0;
+		}
+		else if(BufferSize<WordSize){
+			printf("<");
+			return 0;
+		}
+		else{
+			while(i< WordSize){
+				//printf("\nWord:%c Buff:%c",Word[i],Buffer[i]);
+				if(Word[i] != Buffer[i]){
+					flag = 1;
+					break;
+				}
+				i++;
+			}
+		
+			//printf("%d",flag);
+			if(flag == 0){
+				//printf("\nzero!");
+				//sys_req(READ,TERMINAL,Buffer,&bufSize);
+				return 1;
+			}
+			else{
+				//printf("\nnot 0");
+				//sys_req(READ,TERMINAL,Buffer,&bufSize);
+				return 0;
+			}
+		}
+	}
+}	
+
+//Gets Size of a Pointer Variable
+int sizeOfPointer(char *Buffer){
+	int i = 0;
+	while(i<bufSize){
+		//printf("\nBlah:%d",Buffer[i]);
+		if(Buffer[i] == 10){
+			return i;
+		}
+		i++;
+	}
+	return -1;
+}
+
+//Gets Size of an Array
+int sizeOfArray(char Array[]){
+	int i = 0;
+	while(i<80){
+		//printf("Blah:%d",Array[i]);
+		if(Array[i] ==0){
+			return i;
+		}
+		i++;
+	}
+	return -1;
+}
+
+//Displays Closing Message
 void displayClosing(){
 	printf("Thank you for using the Functional Fresco MPX OS.\n Have a nice day! :)\n");
 }//end displayClosing
 
+//Frees Allocated Memory
 void commandCleanup(){
 	//int error = sys_free_mem(userCommand); //!NOTE! - Display Errors
 	//error = errorCheck(error);
 	printf("The error number is %d.\n", error); //test3------------------------------------------
 }//end commandCleanup
 
+//Displays Print Statements for All Errors & Returns Common Error Code (0 No Error, -1 Error)
 int errorCheck(int error){
 	if(error == 0){
 		return 0;				//No Error
@@ -172,7 +346,9 @@ int errorCheck(int error){
 	}//end if
 }//end errorCheck
 
+//Stores History of User Commands
 void storeHistory(char *userCommand){
+	//Create a copy of the userCommand & use that throughout here!  All this is doing right now is copying references. -----------------
 	
 	if(historyCounter == 0){
 		*historyList[historyQueue_Head] = *userCommand;		//Store User Command to Queue Head
@@ -206,6 +382,7 @@ void storeHistory(char *userCommand){
 }//end storeHistory
 
 
+
 /********* "Handler" Commands ********/
 //Display Help Information
 void handler_help(){
@@ -217,7 +394,7 @@ void handler_help(){
 	printf("get_Date              Displays the current date.\n");
 	printf("display_MPX			  Displays the available MPX Process Files.\n");
 	printf("terminate_MPX		  Terminates the MPX program.\n");
-	printf("display_History		  Displays a history of previous User Commands.\n");
+	//printf("display_History		  Displays a history of previous User Commands.\n");
 	printf("\n");
 	//Add a while loop perhaps with additional command info available via help files?..........................
 }//end handler_help
@@ -304,17 +481,21 @@ char *Buffer= NULL;
 
 //Terminate MPX Execution
 void handler_terminate_MPX(){
-	char userAns = 'n'; //n is No, y is Yes
+	char *userAns;
+    userAns[0]	= 'n'; //n is No, y is Yes
 
 	printf("Are you sure you would like to exit the system (y or n): ");
-	
-	scanf("%c\n", userAns); 		//Chang this to sys_req-------------------------------------------------
+	userAns = keyboardInput();
+	printf("\n");
 
-	if(userAns == 'y'){
+	if(userAns[0] == 'y'){
 		comDone = 1;
 	}//end if
 }//end handler_terminate_MPX
 
+
+
+/********* Extra Credit Commands ********/
 //Display History of User Commands
 void handler_display_History(){
 	int historyDisplay_Head = historyQueue_Head;
@@ -335,189 +516,7 @@ void handler_display_History(){
 	printf("%s\n", *historyList[historyDisplay_Tail]);
 }//end handler_display_History
 
-void handler_readme(){
-	printf("\nReadme!");
-}
-
-
-//Gets input from the Keyboard
-char* keyboardInput (){
-	char *Buffer= NULL;
-	char *Buffer2 = NULL;
-	int bufSize2 = 0;
-	int WordSize;
-	int Temp;
-	int flag;
-	int i = 0;
-	int j = 0;
-	if(bufSize2<1){
-		printf("%s",prompt);
-		sys_req(READ,TERMINAL,Buffer2,&bufSize);
-
-		while(i<bufSize){
-			Temp = Buffer2[i];
-			if(Temp==10){
-				break;
-			}
-			else{
-				if(Temp >=47 && Temp <59|| Temp >=65 && Temp<91 || Temp >= 92&& Temp < 93 || Temp >=97 && Temp <123){
-					//printf("\nc:%c b:%c",Buffer[j],Temp);
-					Buffer[j] = Buffer2[i];
-					j++;
-					//printf("%d",j);
-				}
-			}
-			i++;
-		}
-		return Buffer;
-	}
-	else{
-		printf("%s",prompt);
-		sys_req(READ,TERMINAL,Buffer2,&bufSize2);
-
-		while(i<bufSize2){
-			Temp = Buffer2[i];
-			if(Temp==10){
-				break;
-			}
-			else{
-				if(Temp >=47 && Temp <59|| Temp >=65 && Temp<91 || Temp >= 92&& Temp < 93 || Temp >=97 && Temp <123){
-					//printf("\nc:%c b:%c",Buffer[j],Temp);
-					Buffer[j] = Buffer2[i];
-					j++;
-					//printf("%d",j);
-				}
-			}
-			i++;
-		}
-		return Buffer;
-	}
-}
-
-char* keyboardInput2 (int bufSize2){
-	char *Buffer= NULL;
-	char *Buffer2 = NULL;
-	int WordSize;
-	int Temp;
-	int flag;
-	int i = 0;
-	int j = 0;
-	if(bufSize2<1){
-		printf("%s",prompt);
-		sys_req(READ,TERMINAL,Buffer2,&bufSize);
-
-		while(i<bufSize){
-			Temp = Buffer2[i];
-			if(Temp==10){
-				break;
-			}
-			else{
-				if(Temp >=47 && Temp <59|| Temp >=65 && Temp<91 || Temp >= 92&& Temp < 93 || Temp >=97 && Temp <123){
-					//printf("\nc:%c b:%c",Buffer[j],Temp);
-					Buffer[j] = Buffer2[i];
-					j++;
-					//printf("%d",j);
-				}
-			}
-			i++;
-		}
-		return Buffer;
-	}
-	else{
-		printf("%s",prompt);
-		sys_req(READ,TERMINAL,Buffer2,&bufSize2);
-
-		while(i<bufSize2){
-			Temp = Buffer2[i];
-			if(Temp==10){
-				break;
-			}
-			else{
-				if(Temp >=47 && Temp <59|| Temp >=65 && Temp<91 || Temp >= 92&& Temp < 93 || Temp >=97 && Temp <123){
-					//printf("\nc:%c b:%c",Buffer[j],Temp);
-					Buffer[j] = Buffer2[i];
-					j++;
-					//printf("%d",j);
-				}
-			}
-			i++;
-		}
-		return Buffer;
-	}
-}
-
-//Compares Keyboard Output to String
-int cmpP2S(char *Buffer, char Word[]){
-	int WordSize, BufferSize;
-	int Temp;
-	int flag= 0;
-	int i = 0;
-	BufferSize = sizeOfPointer(Buffer);
-	WordSize = sizeOfArray(Word);
-	//printf("\n\n%d",WordSize);
-	if(WordSize <1){
-		//error word to short
-		printf("error 1");
-		return -1;
-	}
-	else{
-		if(BufferSize>WordSize){
-			printf(">");
-			return 0;
-		}
-		else if(BufferSize<WordSize){
-			printf("<");
-			return 0;
-		}
-		else{
-			while(i< WordSize){
-				//printf("\nWord:%c Buff:%c",Word[i],Buffer[i]);
-				if(Word[i] != Buffer[i]){
-					flag = 1;
-					break;
-				}
-				i++;
-			}
-		
-			//printf("%d",flag);
-			if(flag == 0){
-				//printf("\nzero!");
-				//sys_req(READ,TERMINAL,Buffer,&bufSize);
-				return 1;
-			}
-			else{
-				//printf("\nnot 0");
-				//sys_req(READ,TERMINAL,Buffer,&bufSize);
-				return 0;
-			}
-		}
-	}
-}	
-	
-int sizeOfPointer(char *Buffer){
-	int i = 0;
-	while(i<bufSize){
-		//printf("\nBlah:%d",Buffer[i]);
-		if(Buffer[i] == 10){
-			return i;
-		}
-		i++;
-	}
-	return -1;
-}
-
-int sizeOfArray(char Array[]){
-	int i = 0;
-	while(i<80){
-		//printf("Blah:%d",Array[i]);
-		if(Array[i] ==0){
-			return i;
-		}
-		i++;
-	}
-	return -1;
-}
-
+//Allows User to Change the Prompt Character
 void change_prompt(){
 	char *newPrompt;
 	int i= 0, newPromptSize;
@@ -537,3 +536,6 @@ void change_prompt(){
 		i++;
 	}
 }
+
+
+
