@@ -22,31 +22,29 @@ void storeHistory(char*);
 
 void handler_help(void);
 void handler_version(void);
-void handler_displayDate(void);
-void handler_setDate(void);
-void handler_display_MPX(void);
+int handler_get_Date(void);
+int handler_set_Date(void);
+void handler_display_MPX();
 void handler_terminate_MPX(void);
+void handler_readme();
+
 char* keyboardInput2(int);
 char* keyboardInput();
 void change_prompt();
 int cmpP2S(char *, char[]);
 int sizeOfPointer(char*);
-void handler_readme();
-void handler_display_mpx();
-int handler_version();
-int handler_get_date();
-
-int bufSize= 80;
-char prompt[5] = ":>";
 
 
 /******** Parameter List ********/
-int version = 0.3; 							//Current MPX Version #
+int version = 0.4; 							//Current MPX Version #
 int comDone = 0;							//Command Handler Loop Indictor - Indicates whether the user is ready to terminate the program.
 char *userInput;							//Current User Input
 char *userCommand;
 int error = 0;								//Variable for Error Handling
-int bufferSize = 80;						//-----------------------------------------------------
+
+int bufSize = 80;
+char prompt[5] = ":>";
+						    
 char *historyList[historySize];
 int historyQueue_Head = 0;
 int historyQueue_Tail = 0;
@@ -67,32 +65,28 @@ void commandHandler(){
 	while(comDone !=1){						//2.2 Begin While Loop for User Commands
 		commandPrompt();					//2.2.1 Request for User Input
 		
-		//scanf("%s", *userCommand);		//2.2.2 Accept command from User---------------------------------------------------
-		error  = sys_req(READ, TERMINAL, userCommand, &bufferSize);
+		userCommand = keyboardInput();      //2.2.2 Accept command from User
 		printf("\n");
 		printf("The userCommand is: %s\n", *userCommand); //test1
 		
-		while(userCommand[0] == ' '){  		//2.2.3 Parse String until First Character is not blank
-			userCommand = userCommand + 1;
-		}//end while
-		printf("The parsed userCommand is: %s\n", *userCommand); //test2
+		cmpP2S(userCommand, ")
 		
-		/*//Temporary Decision Statement
-		if(strcmp(*userCommand, "help") == 0){
+		//Temporary Decision Statement
+		if(cmpP2S(userCommand, "help") == 1){
 			handler_help();
-		} else if(strcmp(*userCommand, "version") == 0){
+		} else if(cmpP2S(userCommand, "version") == 1){
 			handler_version();
-		} else if(strcmp(*userCommand, "set_Date") == 0){
+		} else if(cmpP2S(userCommand, "set_Date") == 1){
 			handler_set_Date();
-		} else if(strcmp(*userCommand, "get_Date") == 0){
+		} else if(cmpP2S(userCommand, "get_Date") == 1){
 			handler_get_Date();
-		} else if(strcmp(*userCommand, "display_MPX") == 0){
+		} else if(cmpP2S(userCommand, "display_MPX") == 1){
 			handler_display_MPX();
-		} else if(strcmp(*userCommand, "terminate_MPX") == 0){
+		} else if(cmpP2S(userCommand, "terminate_MPX") == 1){
 			handler_terminate_MPX();
 		} else {
-			printf("Error.\n");
-		}//end if - Decision*/
+			printf("Invalid Command.\n");
+		}//end if - Decision
 		
 	}//end while
 
@@ -229,30 +223,91 @@ void handler_help(){
 }//end handler_help
 
 //Display Current MPX Version #
-void handler_version(){
-	printf("The current MPX Version Number is %.3f.\n", version);
+int handler_version(){
+
+    //Print the current version number
+	printf("MPX Version %.3f.\n", version);
+	
+	//Print the date current version was completed
+	printf("Completed 09/15/2010\n");
+	
+	return 0;
 }//end handler_version
 
 //Display Date
-void handler_get_Date(){
-	//Use built in function........................
+int handler_get_Date(){
+	//Declare new date_rec variable
+	date_rec date;
+	
+	//Declare a pointer of type pointer to date_rec
+	date_rec *dptr;
+	
+	//Set pointer to point to date_rec date
+	dptr = &date;
+	
+	//Call system function with pointer passed in
+	sys_get_date(&date);
+	
+	//Print date by accessing the attributes of the pointer to the struct
+	printf("The current date is: %d/%d/%d\n", date.month, date.day, date.year);
+	
+	return 0;
 }//end handler_get_Date
 
 //Set Date
 void handler_set_Date(){
 	//Use built in function.............................
+	//printf("Enter the day (dd): \n");
 }//end handler_set_Date
 
 //Display Directory of Available MPX Process Files
 void handler_display_MPX(){
-	printf("This will display a directory of the available MPX Process Files.\n");
-}//end handler_display_MPX
+char *Buffer= NULL;
+	char BufferArray[80] = {0};
+	char currentFile[40];
+	long j = 0;
+	int error, i = 0;
+	int nameSize = 40;
+	printf("\nWelcome to MPX");
+	printf("\nPlease enter the directory to be opened\n");
+	Buffer = keyboardInput();
+	while(i<sizeOfPointer(Buffer)){
+		BufferArray[i] = Buffer[i];
+		i++;
+	}
+	error = sys_open_dir(BufferArray);
+	//errorCheck(error);
+	printf("%s",BufferArray);
+	if(error ==0){
+		i = 0;
+		while(error == 0){
+			error = sys_get_entry(currentFile,nameSize,&j);
+			if(error == 0){
+				i++;
+				printf("\nFilename:%s       \tBuffersize:%d\tFile Size:%ld",currentFile,nameSize,j);
+			}
+			//printf("\n%d",error);
+		}
+		if(error != -113){
+			//errorCheck(error);
+		}
+		else{
+			error = sys_close_dir();
+			//errorCheck(error);
+			//printf("\n%d",error);
+			if(i == 0){
+			printf("No MPX files are in that directory\n");
+			}
+		}
+	}
+}
 
 //Terminate MPX Execution
 void handler_terminate_MPX(){
 	char userAns = 'n'; //n is No, y is Yes
 
 	printf("Are you sure you would like to exit the system (y or n): ");
+	
 	scanf("%c\n", userAns); 		//Chang this to sys_req-------------------------------------------------
 
 	if(userAns == 'y'){
@@ -279,6 +334,13 @@ void handler_display_History(){
 	
 	printf("%s\n", *historyList[historyDisplay_Tail]);
 }//end handler_display_History
+
+void handler_readme(){
+	printf("\nReadme!");
+}
+
+
+//Gets input from the Keyboard
 char* keyboardInput (){
 	char *Buffer= NULL;
 	char *Buffer2 = NULL;
@@ -384,8 +446,7 @@ char* keyboardInput2 (int bufSize2){
 	}
 }
 
-
-
+//Compares Keyboard Output to String
 int cmpP2S(char *Buffer, char Word[]){
 	int WordSize, BufferSize;
 	int Temp;
@@ -433,51 +494,6 @@ int cmpP2S(char *Buffer, char Word[]){
 	}
 }	
 	
-
-void handler_readme(){
-	printf("\nReadme!");
-}
-
-void handler_display_mpx(){
-	char *Buffer= NULL;
-	char BufferArray[80] = {0};
-	char currentFile[40];
-	long j = 0;
-	int error, i = 0;
-	int nameSize = 40;
-	printf("\nWelcome to MPX");
-	printf("\nPlease enter the directory to be opened\n");
-	Buffer = keyboardInput();
-	while(i<sizeOfPointer(Buffer)){
-		BufferArray[i] = Buffer[i];
-		i++;
-	}
-	error = sys_open_dir(BufferArray);
-	//errorCheck(error);
-	printf("%s",BufferArray);
-	if(error ==0){
-		i = 0;
-		while(error == 0){
-			error = sys_get_entry(currentFile,nameSize,&j);
-			if(error == 0){
-				i++;
-				printf("\nFilename:%s       \tBuffersize:%d\tFile Size:%ld",currentFile,nameSize,j);
-			}
-			//printf("\n%d",error);
-		}
-		if(error != -113){
-			//errorCheck(error);
-		}
-		else{
-			error = sys_close_dir();
-			//errorCheck(error);
-			//printf("\n%d",error);
-			if(i == 0){
-			printf("No MPX files are in that directory\n");
-			}
-		}
-	}
-}
 int sizeOfPointer(char *Buffer){
 	int i = 0;
 	while(i<bufSize){
@@ -489,6 +505,7 @@ int sizeOfPointer(char *Buffer){
 	}
 	return -1;
 }
+
 int sizeOfArray(char Array[]){
 	int i = 0;
 	while(i<80){
@@ -500,6 +517,7 @@ int sizeOfArray(char Array[]){
 	}
 	return -1;
 }
+
 void change_prompt(){
 	char *newPrompt;
 	int i= 0, newPromptSize;
@@ -518,41 +536,4 @@ void change_prompt(){
 		//printf("\nWord:%c Buff:%c",prompt[i],newPrompt[i]);
 		i++;
 	}
-}
-int handler_version(){
-
-	//Print the current version number
-	printf("MPX version 1.0\n");
-
-	//Print the date current version was completed
-	printf("Completed 09/17/2010\n");
-
-	return 0;
-}
-
-int handler_get_date(){
-	
-	//Declare new date_rec variable
-	date_rec date;
-	
-	//Declare a pointer of type pointer to date_rec
-	date_rec *dptr;
-	
-	//Set pointer to point to date_rec date
-	dptr = &date;
-	
-	//Call system function with pointer passed in
-	sys_get_date(&date);
-	
-	//Print date by accessing the attributes of the pointer to the struct
-	printf("The current date is: %d/%d/%d\n", date.month, date.day, date.year);
-	
-	return 0;
-	
-}
-
-int handler_set_date(){
-
-	printf("Enter the day (dd): \n");
-	
 }
