@@ -21,9 +21,9 @@ int errorCheck(int);
 void storeHistory(char*);
 
 void handler_help(void);
-void handler_version(void);
+int handler_version(void);
 int handler_get_Date(void);
-int handler_set_Date(void);
+void handler_set_Date(void);
 void handler_display_MPX();
 void handler_terminate_MPX(void);
 void handler_readme();
@@ -69,7 +69,6 @@ void commandHandler(){
 		printf("\n");
 		printf("The userCommand is: %s\n", *userCommand); //test1
 		
-		cmpP2S(userCommand, ")
 		
 		//Temporary Decision Statement
 		if(cmpP2S(userCommand, "help") == 1){
@@ -250,7 +249,7 @@ int handler_get_Date(){
 	
 	//Print date by accessing the attributes of the pointer to the struct
 	printf("The current date is: %d/%d/%d\n", date.month, date.day, date.year);
-	
+	&date = dptr; // ERASE ME LATER
 	return 0;
 }//end handler_get_Date
 
