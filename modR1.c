@@ -36,7 +36,8 @@ int sizeOfPointer(char*);
 
 
 /******** Parameter List ********/
-int version = 0.4; 							//Current MPX Version #
+int version1 = 0;
+int version2 =4; 							//Current MPX Version #
 int comDone = 0;							//Command Handler Loop Indictor - Indicates whether the user is ready to terminate the program.
 char *userInput;							//Current User Input
 char *userCommand;
@@ -44,7 +45,7 @@ int error = 0;								//Variable for Error Handling
 
 int bufSize = 80;
 char prompt[5] = ":>";
-						    
+
 char *historyList[historySize];
 int historyQueue_Head = 0;
 int historyQueue_Tail = 0;
@@ -60,37 +61,57 @@ void main(){
 
 /******** Command Handler ********/
 void commandHandler(){
+	int i = 0;
+	int userCommandSize;
 	displayWelcome();						//2.1 Display the Welcome Message
 
 	while(comDone !=1){						//2.2 Begin While Loop for User Commands
-		commandPrompt();					//2.2.1 Request for User Input
-		
+		//commandPrompt();					//2.2.1 Request for User Input
+		printf("\nPlease enter the command to be executed(case sensitive).\n");
 		userCommand = keyboardInput();      //2.2.2 Accept command from User
+		printf("The userCommand is: ");
+		userCommandSize = sizeOfPointer(userCommand);
+		//printf("%d",userCommandSize);
+		i = 0;
+		while(i<userCommandSize){
+			printf("%c", userCommand[i]); //test1
+			i++;
+		}
 		printf("\n");
-		printf("The userCommand is: %s\n", *userCommand); //test1
-		
 		
 		//Temporary Decision Statement
-		if(cmpP2S(userCommand, "help") == 1){
+		if(cmpP2S(userCommand, "help") == 1||cmpP2S(userCommand, "?") == 1){
 			handler_help();
-		} else if(cmpP2S(userCommand, "version") == 1){
+		} 
+		else if(cmpP2S(userCommand, "version") == 1){
 			handler_version();
-		} else if(cmpP2S(userCommand, "set_Date") == 1){
-			handler_set_Date();
-		} else if(cmpP2S(userCommand, "get_Date") == 1){
-			handler_get_Date();
-		} else if(cmpP2S(userCommand, "display_MPX") == 1){
+		} 
+		else if(cmpP2S(userCommand, "set_Date") == 1){
+			//handler_set_Date();
+		} 
+		else if(cmpP2S(userCommand, "get_Date") == 1){
+			//handler_get_Date();
+		} 
+		else if(cmpP2S(userCommand, "display_MPX") == 1){
 			handler_display_MPX();
-		} else if(cmpP2S(userCommand, "terminate_MPX") == 1){
+		} 
+		else if(cmpP2S(userCommand, "terminate_MPX") == 1){
 			handler_terminate_MPX();
-		} else {
+		} 
+		else if(cmpP2S(userCommand, "change_prompt") == 1){
+			change_prompt();
+		} 
+		else if(cmpP2S(userCommand, "exit")==1){
+			break;
+		} 
+		else {
 			printf("Invalid Command.\n");
 		}//end if - Decision
 		
 	}//end while
-
 	displayClosing();						//2.2.4 Display closing message
 	commandCleanup();						//2.2.5 Cleanup Allocated Memory
+	keyboardInput();
 	sys_exit();								//2.2.6 Return to host system
 }
 
@@ -98,7 +119,7 @@ void commandHandler(){
 
 /******** Command Handler Functions ********/
 void displayWelcome(){
-	printf("Welcome to the Functional Fresco MPX OS.\n\n");
+	printf("Welcome to the Functional Fresco MPX OS.\n");
 }//end displayWelcome
 
 void commandPrompt(){
@@ -107,7 +128,7 @@ void commandPrompt(){
 }//end commandPrompt
 
 void displayClosing(){
-	printf("Thank you for using the Functional Fresco MPX OS.\n Have a nice day! :)\n");
+	printf("Thank you for using the Functional Fresco MPX OS.\nHave a nice day! :)\n");
 }//end displayClosing
 
 void commandCleanup(){
@@ -217,6 +238,7 @@ void handler_help(){
 	printf("display_MPX			  Displays the available MPX Process Files.\n");
 	printf("terminate_MPX		  Terminates the MPX program.\n");
 	printf("display_History		  Displays a history of previous User Commands.\n");
+	printf("change_prompt         Allows the user to change the prompt");
 	printf("\n");
 	//Add a while loop perhaps with additional command info available via help files?..........................
 }//end handler_help
@@ -224,8 +246,8 @@ void handler_help(){
 //Display Current MPX Version #
 int handler_version(){
 
-    //Print the current version number
-	printf("MPX Version %.3f.\n", version);
+	//Print the current version number
+	printf("MPX Version %d.%d\n", version1,version2);
 	
 	//Print the date current version was completed
 	printf("Completed 09/15/2010\n");
@@ -249,7 +271,8 @@ int handler_get_Date(){
 	
 	//Print date by accessing the attributes of the pointer to the struct
 	printf("The current date is: %d/%d/%d\n", date.month, date.day, date.year);
-	&date = dptr; // ERASE ME LATER
+	//&date = dptr; // ERASE ME LATER
+	printf("%c",dptr[0]);
 	return 0;
 }//end handler_get_Date
 
@@ -261,7 +284,7 @@ void handler_set_Date(){
 
 //Display Directory of Available MPX Process Files
 void handler_display_MPX(){
-char *Buffer= NULL;
+	char *Buffer= NULL;
 	char BufferArray[80] = {0};
 	char currentFile[40];
 	long j = 0;
@@ -295,7 +318,7 @@ char *Buffer= NULL;
 			//errorCheck(error);
 			//printf("\n%d",error);
 			if(i == 0){
-			printf("No MPX files are in that directory\n");
+				printf("No MPX files are in that directory\n");
 			}
 		}
 	}
@@ -303,15 +326,24 @@ char *Buffer= NULL;
 
 //Terminate MPX Execution
 void handler_terminate_MPX(){
-	char userAns = 'n'; //n is No, y is Yes
+	int flag = 0;
+	char *userAns; //n is No, y is Yes
+	while(flag ==0){
+		printf("\nAre you sure you would like to exit the system (y or n):\n");
+		
+		userAns = keyboardInput(); 		//Chang this to sys_req-------------------------------------------------
 
-	printf("Are you sure you would like to exit the system (y or n): ");
-	
-	scanf("%c\n", userAns); 		//Chang this to sys_req-------------------------------------------------
-
-	if(userAns == 'y'){
-		comDone = 1;
-	}//end if
+		if(cmpP2S(userAns,"y")==1){
+			comDone = 1;
+			flag = 1;
+		}
+		else if(cmpP2S(userAns,"n") !=1){
+			printf("Invalid input. Input is case sensitive.\n");
+		}
+		else{
+			flag = 1;
+		}//end if
+	}
 }//end handler_terminate_MPX
 
 //Display History of User Commands
@@ -359,7 +391,7 @@ char* keyboardInput (){
 				break;
 			}
 			else{
-				if(Temp >=47 && Temp <59|| Temp >=65 && Temp<91 || Temp >= 92&& Temp < 93 || Temp >=97 && Temp <123){
+				if(Temp ==95 ||Temp >=47 && Temp <59|| Temp >=65 && Temp<91 || Temp >= 92&& Temp < 93 || Temp >=97 && Temp <123){
 					//printf("\nc:%c b:%c",Buffer[j],Temp);
 					Buffer[j] = Buffer2[i];
 					j++;
@@ -380,7 +412,7 @@ char* keyboardInput (){
 				break;
 			}
 			else{
-				if(Temp >=47 && Temp <59|| Temp >=65 && Temp<91 || Temp >= 92&& Temp < 93 || Temp >=97 && Temp <123){
+				if(Temp ==95 ||Temp >=47 && Temp <59|| Temp >=65 && Temp<91 || Temp >= 92&& Temp < 93 || Temp >=97 && Temp <123){
 					//printf("\nc:%c b:%c",Buffer[j],Temp);
 					Buffer[j] = Buffer2[i];
 					j++;
@@ -411,7 +443,7 @@ char* keyboardInput2 (int bufSize2){
 				break;
 			}
 			else{
-				if(Temp >=47 && Temp <59|| Temp >=65 && Temp<91 || Temp >= 92&& Temp < 93 || Temp >=97 && Temp <123){
+				if(Temp ==95 ||Temp >=47 && Temp <59|| Temp >=65 && Temp<91 || Temp >= 92&& Temp < 93 || Temp >=97 && Temp <123){
 					//printf("\nc:%c b:%c",Buffer[j],Temp);
 					Buffer[j] = Buffer2[i];
 					j++;
@@ -432,7 +464,7 @@ char* keyboardInput2 (int bufSize2){
 				break;
 			}
 			else{
-				if(Temp >=47 && Temp <59|| Temp >=65 && Temp<91 || Temp >= 92&& Temp < 93 || Temp >=97 && Temp <123){
+				if(Temp ==95 ||Temp >=47 && Temp <59|| Temp >=65 && Temp<91 || Temp >= 92&& Temp < 93 || Temp >=97 && Temp <123){
 					//printf("\nc:%c b:%c",Buffer[j],Temp);
 					Buffer[j] = Buffer2[i];
 					j++;
@@ -461,11 +493,11 @@ int cmpP2S(char *Buffer, char Word[]){
 	}
 	else{
 		if(BufferSize>WordSize){
-			printf(">");
+			//printf(">");
 			return 0;
 		}
 		else if(BufferSize<WordSize){
-			printf("<");
+			//printf("<");
 			return 0;
 		}
 		else{
@@ -477,7 +509,7 @@ int cmpP2S(char *Buffer, char Word[]){
 				}
 				i++;
 			}
-		
+			
 			//printf("%d",flag);
 			if(flag == 0){
 				//printf("\nzero!");
@@ -492,7 +524,7 @@ int cmpP2S(char *Buffer, char Word[]){
 		}
 	}
 }	
-	
+
 int sizeOfPointer(char *Buffer){
 	int i = 0;
 	while(i<bufSize){
