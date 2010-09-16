@@ -256,7 +256,7 @@ int handler_get_Date(){
 //Set Date
 void handler_set_Date(){
 	//Use built in function.............................
-	//printf("Enter the day (dd): \n");
+	printf("Enter the day (dd): \n");
 }//end handler_set_Date
 
 //Display Directory of Available MPX Process Files
