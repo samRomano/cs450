@@ -52,7 +52,15 @@ int historyQueue_Tail = 0;
 int historyCounter = 0;
 
 
-/******** Main ********/
+/**
+*	\n Procedure: Main()
+*	\n Purpose: Initializes the program and runs the program
+*	\n Parameters: None
+*	\n Returns: None
+*	\n Procedures Called: sys_init, commandHandler
+*	\n Global Data Accessed: None
+*/
+
 void main(){
 	sys_init(MODULE_R1);			    	//1. Initialize
 	commandHandler();				    	//2. Call commandHandler function
@@ -188,6 +196,7 @@ int errorCheck(int error){
 		} else if(error == -123){
 			printf("Error(-123): Invalid Handler Address.\n");
 		}
+		
 		return -1;				//Common Error Value
 	}//end if
 }//end errorCheck
@@ -271,7 +280,7 @@ int handler_get_Date(){
 	
 	//Print date by accessing the attributes of the pointer to the struct
 	printf("The current date is: %d/%d/%d\n", date.month, date.day, date.year);
-	//&date = dptr; // ERASE ME LATER
+
 	printf("%c",dptr[0]);
 	return 0;
 }//end handler_get_Date
