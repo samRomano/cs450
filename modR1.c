@@ -21,12 +21,12 @@ void storeHistory(char*);
 
 void handler_help(void);
 int handler_version(void);
-int handler_get_Date(void);
-int handler_set_Date(void);
+int handler_get_date(void);
+int handler_set_date(void);
 void handler_display_MPX();
 void handler_terminate_MPX(void);
 void handler_readme(void);
-void handler_display_History(void);
+//void handler_display_history(void);
 
 char* keyboardInput2(void);
 char* keyboardInput(int);
@@ -72,45 +72,54 @@ void main(){
 /******** Command Handler ********/
 void commandHandler(){
 	int userCommandSize;
+	int fix = 0;
 	displayWelcome();							//2.1 Display the Welcome Message
 
 	while(comDone !=1){							//2.2 Begin While Loop for User Commands
+		userCommand = NULL;
+		if( fix ==0){
+			printf("\nPlease enter the command to be executed(case sensitive).\n");
+			userCommand = keyboardInput(0);      	//2.2.1 Request User Input & Accept Command from User
+			printf("\n");
 		
-		printf("\nPlease enter the command to be executed(case sensitive).\n");
-		userCommand = keyboardInput(0);      	//2.2.1 Request User Input & Accept Command from User
-		printf("\n");
 		
-		//Decision Statement
-		if(cmpP2S(userCommand, "help") == 1 || cmpP2S(userCommand, "/?") == 1){
-			handler_help();
-		} 
-		else if(cmpP2S(userCommand, "version") == 1){
-			handler_version();
-		} 
-		else if(cmpP2S(userCommand, "set_Date") == 1){
-			//handler_set_Date();
-		} 
-		else if(cmpP2S(userCommand, "get_Date") == 1){
-			//handler_get_Date();
-		} 
-		else if(cmpP2S(userCommand, "display_MPX") == 1){
-			handler_display_MPX();
-		} 
-		else if(cmpP2S(userCommand, "display_History") == 1){
-			handler_display_History();
+			//Decision Statement
+			if(cmpP2S(userCommand, "help") == 1 || cmpP2S(userCommand, "/?") == 1){
+				handler_help();
+			} 
+			else if(cmpP2S(userCommand, "version") == 1){
+				handler_version();
+			} 
+			else if(cmpP2S(userCommand, "set_date") == 1){
+				handler_set_date();
+				fix = 1;
+			} 
+			else if(cmpP2S(userCommand, "get_date") == 1){
+				handler_get_date();
+			} 
+			else if(cmpP2S(userCommand, "display_MPX") == 1){
+				handler_display_MPX();
+			} 
+			//else if(cmpP2S(userCommand, "display_history") == 1){
+			//	handler_display_history();
+			//}
+			else if(cmpP2S(userCommand, "terminate_MPX") == 1){
+				handler_terminate_MPX();
+			} 
+			else if(cmpP2S(userCommand, "change_prompt") == 1){
+				change_prompt();
+			} 
+			else if(cmpP2S(userCommand, "exit")==1){
+				break;
+			} 
+			else {
+				printf("Invalid Command.\n");
+			}//end if - Decision
 		}
-		else if(cmpP2S(userCommand, "terminate_MPX") == 1){
-			handler_terminate_MPX();
-		} 
-		else if(cmpP2S(userCommand, "change_prompt") == 1){
-			change_prompt();
-		} 
-		else if(cmpP2S(userCommand, "exit")==1){
-			break;
-		} 
 		else {
-			printf("Invalid Command.\n");
-		}//end if - Decision
+			sys_req(READ,TERMINAL,userCommand,&bufSize);
+			fix = 0;
+		}
 	}//end while
 	displayClosing();						//2.2.4 Display closing message
 	commandCleanup();						//2.2.5 Cleanup Allocated Memory
@@ -239,11 +248,11 @@ void handler_help(){
 	printf("-----------Help-----------\n");
 	printf("help                  Displays help on the current acceptable commands.\n");
 	printf("version               Displays the current MPX Version Number.\n");
-	printf("set_Date              Allows the user to set the current date.\n");
-	printf("get_Date              Displays the current date.\n");
+	printf("set_date              Allows the user to set the current date.\n");
+	printf("get_date              Displays the current date.\n");
 	printf("display_MPX			  Displays the available MPX Process Files.\n");
 	printf("terminate_MPX		  Terminates the MPX program.\n");
-	printf("display_History		  Displays a history of previous User Commands.\n");
+	printf("display_history		  Displays a history of previous User Commands.\n");
 	printf("change_prompt         Allows the user to change the prompt");
 	printf("\n");
 	//Add a while loop perhaps with additional command info available via help files?..........................
@@ -262,7 +271,7 @@ int handler_version(){
 }//end handler_version
 
 //Display Date
-int handler_get_Date(){
+int handler_get_date(){
 	//Declare new date_rec variable
 	date_rec date;
 	
@@ -275,12 +284,6 @@ int handler_get_Date(){
 	return 0;
 }//end handler_get_Date
 
-//Set Date
-int handler_set_Date(){
-	//Use built in function.............................
-	//printf("Enter the day (dd): \n");
-	return 0;
-}//end handler_set_Date
 
 //Display Directory of Available MPX Process Files
 void handler_display_MPX(){
@@ -354,7 +357,8 @@ void handler_readme(){
 
 /********* Extra Credit Commands ********/
 //Display History of User Commands
-void handler_display_History(){
+/*
+void handler_display_history(){
 	int historyDisplay_Head = historyQueue_Head;
 	int historyDisplay_Tail = historyQueue_Tail;
 
@@ -372,6 +376,7 @@ void handler_display_History(){
 	
 	printf("%s\n", *historyList[historyDisplay_Tail]);
 }//end handler_display_History
+*/
 
 //Allows User to Change the Prompt Character
 void change_prompt(){
@@ -379,7 +384,7 @@ void change_prompt(){
 	int i= 0, newPromptSize;
 	
 	printf("\nEnter New Prompt String(Max 5 characters)\n");
-	newPrompt = keyboardInput2(5);
+	newPrompt = keyboardInput(5);
 	newPromptSize = sizeOfPointer(newPrompt);
 	while(i<4){
 		//printf("\nWord:%c Buff:%c",prompt[i],newPrompt[i]);
@@ -396,7 +401,7 @@ void change_prompt(){
 
 
 //Gets User Input from Keyboard - Buffer Size=80
-char* keyboardInput2(){
+char* keyboardInput2 (){
 	char *Buffer= NULL;
 	char *Buffer2 = NULL;
 	int bufSize2 = 0;
@@ -449,8 +454,7 @@ char* keyboardInput2(){
 	}
 }
 
-//Gets User Input from Keyboard - Set Buffer Size
-char* keyboardInput(int bufSize2){
+char* keyboardInput (int bufSize2){
 	char *Buffer= NULL;
 	char *Buffer2 = NULL;
 	int WordSize;
@@ -610,22 +614,108 @@ void copyPtr(char *userInp, char *userCom){
 	}//end while
 }//end copyPtr
 
+//Set Date
+int handler_set_date(){
+	char *Buffer;
+	int month;
+	int day;
+	int year;
+	int flag = 0;
+	int leapYear;
+	int i = 0;
+	
+	printf("Enter the date in mmddyyyy format with no slashes or dashes: \n");
+	Buffer = keyboardInput(9);
+	
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+	while(i<8){
+		if(Buffer[i] < 48 || Buffer[i] > 57){
+			printf("The date you entered is invalid!");
+			flag = 1;
+		}
+		i++;		
+		
+	}
+	if(flag == 0){
+		month = (Buffer[0] - 48)*10 + Buffer[1] - 48;
+		day = (Buffer[2] - 48)*10 + Buffer[3] - 48;
+		year = (Buffer[4] - 48)*1000 + (Buffer[5] - 48)*100 + (Buffer[6] - 48)*10 + Buffer[7] - 48;
+		leapYear = year%4;
+		if(month > 12|| day > 1 || month > 1){
+			flag = 1;
+		}
+		if(leapYear==0){
+			if(month < 13 && month == 02 && day > 29){
+				flag = 1;
+			}else if(month <13 && month == 1 && day > 31){
+				flag = 1;
+			}else if(month <13 && month == 3 && day > 31){
+				flag = 1;
+			}else if(month <13 && month == 5 && day > 31){
+				flag = 1;
+			}else if(month <13 && month == 7 && day > 31){
+				flag = 1;		
+			}else if(month <13 && month == 8 && day > 31){
+				flag = 1;	
+			}else if(month <13 && month == 10 && day > 31){
+				flag = 1;	
+			}else if(month <13 && month == 12 && day > 31){
+				flag = 1;	
+			}else if(month <13 && month == 4 && day > 30){
+				flag = 1;
+			}else if(month <13 && month == 6 && day > 30){
+				flag = 1;	
+			}else if(month <13 && month == 9 && day > 30){
+				flag = 1;
+			}else if(month <13 && month == 11 && day > 30){
+				flag = 1;	
+			}
+		}else{
+			if(month < 13 && month == 02 && day > 28){
+				flag = 1;
+			}else if(month <13 && month == 1 && day > 31){
+				flag = 1;
+			}else if(month <13 && month == 3 && day > 31){
+				flag = 1;
+			}else if(month <13 && month == 5 && day > 31){
+				flag = 1;
+			}else if(month <13 && month == 7 && day > 31){
+				flag = 1;		
+			}else if(month <13 && month == 8 && day > 31){
+				flag = 1;	
+			}else if(month <13 && month == 10 && day > 31){
+				flag = 1;	
+			}else if(month <13 && month == 12 && day > 31){
+				flag = 1;	
+			}else if(month <13 && month == 4 && day > 30){
+				flag = 1;
+			}else if(month <13 && month == 6 && day > 30){
+				flag = 1;	
+			}else if(month <13 && month == 9 && day > 30){
+				flag = 1;
+			}else if(month <13 && month == 11 && day > 30){
+				flag = 1;	
+			}
+		}
+		
+	}	
+	
+	if(flag == 0){
+		date_rec date;
+		
+		date.month = month;
+		date.day = day;
+		date.year = year;
+		
+		sys_set_date(&date);
+		
+		sys_get_date(&date);
+		if(date.month != month || date.day != day || date.year != year){
+			errorCheck(-109);
+		}	
+	}else{
+		errorCheck(-108);
+	}
+	return 0;
+}
 
