@@ -8,7 +8,7 @@
 	File Name:	modR1.c
 
 	Group Members: Frank Hamilton, Luis Armendariz, Sam Romano
-	Version: 0.5
+	Version: 1.0
 	Date:  09/16/10
 
 	Purpose: Module R1 file for MPX support
@@ -147,8 +147,8 @@ void copyPtr(char*, char*);
 
 
 /******** Parameter List ********/
-int version1 = 0;								//Current MPX Version # - Ones Digit
-int version2 = 5; 								//Current MPX Version # - Decimal Digit
+int version1 = 1;								//Current MPX Version # - Ones Digit
+int version2 = 0; 								//Current MPX Version # - Decimal Digit
 int comDone = 0;								//Command Handler Loop Indictor - Indicates whether the user is ready to terminate the program.
 char *userInput;								//Current User Input
 char *userCommand;								//Current UserCommand
@@ -204,12 +204,12 @@ void main(){
 **/
 void commandHandler(){
 	int userCommandSize;
-	int fix = 0;
+	//int fix = 0;
 	displayWelcome();							//2.1 Display the Welcome Message
 
 	while(comDone !=1){							//2.2 Begin While Loop for User Commands
 		userCommand = NULL;
-		if( fix ==0){
+		//if( fix ==0){
 			printf("\nPlease enter the command to be executed(case sensitive).\n");
 			userCommand = keyboardInput(0);      	//2.2.1 Request User Input & Accept Command from User
 			printf("\n");
@@ -224,7 +224,7 @@ void commandHandler(){
 			} 
 			else if(cmpP2S(userCommand, "set_date") == 1){
 				handler_set_date();
-				fix = 1;
+				//fix = 1;
 			} 
 			else if(cmpP2S(userCommand, "get_date") == 1){
 				handler_get_date();
@@ -240,7 +240,7 @@ void commandHandler(){
 			} 
 			else if(cmpP2S(userCommand, "change_prompt") == 1){
 				change_prompt();
-				fix = 1;
+				//fix = 1;
 			} 
 			else if(cmpP2S(userCommand, "help_version")==1){
 				handler_help_function("version");
@@ -266,11 +266,11 @@ void commandHandler(){
 			else {
 				printf("Invalid Command.\n");
 			}//end if - Decision
-		}
+		/*}
 		else {
 			sys_req(READ,TERMINAL,userCommand,&bufSize);
 			fix = 0;
-		}
+		}*/
 	}//end while
 	displayClosing();						//2.2.4 Display closing message
 	commandCleanup();						//2.2.5 Cleanup Allocated Memory
@@ -316,7 +316,7 @@ void displayWelcome(){
 	Errors: None
 **/
 void displayClosing(){
-	printf("Thank you for using the Functional Fresco mpx OS.\n Have a nice day! :)\n");
+	printf("\nThank you for using the Functional Fresco mpx OS.\n Have a nice day! :)\n");
 }//end displayClosing
 
 /**
@@ -528,10 +528,10 @@ void handler_help_function(char funName[]){
 		printf("The set_date command takes in user input in the form of a string of numbers(MMDDYYYY) and sets that as the current date. The set_date command can be accessed by typing \"set_date\" in the command prompt. Possible Errors: Invalid Date, Date Not Changed.");
 	}
 	else if(strcmp(funName,"change_prompt")==0){
-		printf("The terminate_mpx command exits the mpx os after it confirms with the user that the os is desired to exit. After confirmation allocated memory is cleared and the os terminates. This command may be called by typing either \"quit\",\"exit\", or \"terminate_mpx\"in the command prompt.");
+		printf("The change_prompt command replaces the standard :> prompt with any prompt that is desired and is 4 characters or less. This command is initiated by typing \"change_prompt\"in the command prompt.");
 	}
 	else if(strcmp(funName,"terminate_mpx")==0){
-		printf("The change_prompt command replaces the standard :> prompt with any prompt that is desired and is 4 characters or less. This command is initiated by typing \"change_prompt\"in the command prompt.");
+		printf("The terminate_mpx command exits the mpx os after it confirms with the user that the os is desired to exit. After confirmation allocated memory is cleared and the os terminates. This command may be called by typing either \"quit\",\"exit\", or \"terminate_mpx\"in the command prompt.");
 	}
 	else{
 		errorCheck(-124);
@@ -618,7 +618,7 @@ int handler_set_date(){
 	int i = 0;
 	
 	printf("Enter the date in mmddyyyy format with no slashes or dashes: \n");
-	Buffer = keyboardInput(9);
+	Buffer = keyboardInput(0);
 	
 
 	while(i<8){
@@ -863,7 +863,7 @@ void change_prompt(){
 	int i= 0, newPromptSize;
 	
 	printf("\nEnter New Prompt String(Max 4 characters)\n");
-	newPrompt = keyboardInput(5);
+	newPrompt = keyboardInput(0);
 	newPromptSize = sizeOfPointer(newPrompt);
 	while(i<4){
 		//printf("\nWord:%c Buff:%c",prompt[i],newPrompt[i]);
