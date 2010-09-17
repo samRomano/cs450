@@ -291,9 +291,10 @@ void handler_display_MPX(){
 	int error, i = 0;
 	int nameSize = 40;
 	printf("\nWelcome to MPX");
-	printf("\nPlease enter the directory to be opened\n");
-	Buffer = keyboardInput(-1);
+	printf("\nPlease enter the directory to be opened it cannot contain spaces\n");
+	Buffer = keyboardInput(0);
 	while(i<sizeOfPointer(Buffer)){
+		//printf("%c",Buffer[i]);
 		BufferArray[i] = Buffer[i];
 		i++;
 	}
