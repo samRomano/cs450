@@ -1,0 +1,40 @@
+The help command is a simple list of all commands in mpx os 
+and a brief statement of their functionality. It can be called
+by typing "help" or "/?" in the command prompt.
+
+The help_ command is called by typing "help_" and the 
+command name in the command prompt. This command displays more 
+detailed information about the command entered.
+
+The display_mpx command is used to locate mpx files in a 
+directory. The directory can be specified or the current 
+directory can be selected by pressing enter once the prompt 
+for a directory has come up. Then all mpx files will be 
+displayed with name, buffer size used, and file size. This 
+command may be called by typing "display_mpx" in the command 
+prompt. Possible Errors: Invalid Directory, Directory Not Open,
+No More Directory Entries, Read Failed, Name To Long For Buffer,
+No Directory Is Open.
+
+The version command simply displays the current working 
+version number and the date it was finalized on. This command 
+is called by typing "version". Possible Error: Invalid help_ command.
+
+The terminate_mpx command exits the mpx os after it confirms 
+with the user that the os is desired to exit. After 
+confirmation allocated memory is cleared and the os terminates.
+This command may be called by typing either "quit","exit", or 
+"terminate_mpx"in the command prompt.
+
+The change_prompt command replaces the standard :> prompt with 
+any prompt that is desired and is 4 characters or less. This 
+command is initiated by typing "change_prompt"in the command prompt. 
+
+The get_date command grabs the set date and displays it. If there is 
+no set date then the system date is acquired and displayed. This
+command can be accessed by typing "get_date" in the command prompt.
+
+The set_date command takes in user input in the form of a string of 
+numbers(MMDDYYYY) and sets that as the current date. The set_date 
+command can be accessed by typing "set_date" in the command prompt.
+Possible Errors: Invalid Date, Date Not Changed.

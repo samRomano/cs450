@@ -23,14 +23,15 @@ void handler_help(void);
 int handler_version(void);
 int handler_get_date(void);
 int handler_set_date(void);
-void handler_display_MPX();
-void handler_terminate_MPX(void);
-void handler_readme(void);
+void handler_display_mpx();
+void handler_terminate_mpx(void);
+void handler_help_function(char[]);
+void change_prompt(void);
 //void handler_display_history(void);
 
 char* keyboardInput2(void);
 char* keyboardInput(int);
-void change_prompt(void);
+
 int cmpP2S(char *, char[]);
 int sizeOfPointer(char*);
 int sizeOfArray(char[]);
@@ -38,8 +39,8 @@ void copyPtr(char*, char*);
 
 
 /******** Parameter List ********/
-int version1 = 0;								//Current MPX Version # - Ones Digit
-int version2 = 5; 								//Current MPX Version # - Decimal Digit
+int version1 = 1;								//Current mpx Version # - Ones Digit
+int version2 = 0; 								//Current mpx Version # - Decimal Digit
 int comDone = 0;								//Command Handler Loop Indictor - Indicates whether the user is ready to terminate the program.
 char *userInput;								//Current User Input
 char *userCommand;								//Current UserCommand
@@ -81,8 +82,8 @@ void commandHandler(){
 			printf("\nPlease enter the command to be executed(case sensitive).\n");
 			userCommand = keyboardInput(0);      	//2.2.1 Request User Input & Accept Command from User
 			printf("\n");
-		
-		
+			
+			
 			//Decision Statement
 			if(cmpP2S(userCommand, "help") == 1 || cmpP2S(userCommand, "/?") == 1){
 				handler_help();
@@ -97,21 +98,40 @@ void commandHandler(){
 			else if(cmpP2S(userCommand, "get_date") == 1){
 				handler_get_date();
 			} 
-			else if(cmpP2S(userCommand, "display_MPX") == 1){
-				handler_display_MPX();
+			else if(cmpP2S(userCommand, "display_mpx") == 1){
+				handler_display_mpx();
 			} 
 			//else if(cmpP2S(userCommand, "display_history") == 1){
 			//	handler_display_history();
 			//}
-			else if(cmpP2S(userCommand, "terminate_MPX") == 1){
-				handler_terminate_MPX();
+			else if(cmpP2S(userCommand, "terminate_mpx") == 1||cmpP2S(userCommand, "exit") == 1||cmpP2S(userCommand, "quit") == 1){
+				handler_terminate_mpx();
 			} 
 			else if(cmpP2S(userCommand, "change_prompt") == 1){
 				change_prompt();
+				fix = 1;
 			} 
-			else if(cmpP2S(userCommand, "exit")==1){
+			else if(cmpP2S(userCommand, "help_version")==1){
+				handler_help_function("version");
+			}
+			else if(cmpP2S(userCommand, "help_set_date")==1){
+				handler_help_function("set_date");
+			}
+			else if(cmpP2S(userCommand, "help_get_date")==1){
+				handler_help_function("get_date");
+			}
+			else if(cmpP2S(userCommand, "help_display_mpx")==1){
+				handler_help_function("display_mpx");
+			}
+			else if(cmpP2S(userCommand, "help_terminate_mpx")==1){
+				handler_help_function("terminate_mpx");
+			}
+			else if(cmpP2S(userCommand, "help_change_prompt")==1){
+				handler_help_function("change_prompt");
+			}
+			/*else if(cmpP2S(userCommand, "exit")==1){
 				break;
-			} 
+			}*/ 
 			else {
 				printf("Invalid Command.\n");
 			}//end if - Decision
@@ -132,19 +152,19 @@ void commandHandler(){
 /******** Command Handler Functions ********/
 //Displays Welcome Message
 void displayWelcome(){
-	printf("Welcome to the Functional Fresco MPX OS.\n");
+	printf("Welcome to the Functional Fresco mpx OS.\n");
 }//end displayWelcome
 
 //Displays Closing Message
 void displayClosing(){
-	printf("Thank you for using the Functional Fresco MPX OS.\n Have a nice day! :)\n");
+	printf("Thank you for using the Functional Fresco mpx OS.\n Have a nice day! :)\n");
 }//end displayClosing
 
 //Frees Allocated Memory
 void commandCleanup(){
 	//int error = sys_free_mem(userCommand); //!NOTE! - Display Errors
 	//error = errorCheck(error);
-	printf("The error number is %d.\n", error); //test3------------------------------------------
+	//printf("The error number is %d.\n", error); //test3------------------------------------------
 }//end commandCleanup
 
 //Displays Print Statements for All Errors & Returns Common Error Code (0 No Error, -1 Error)
@@ -199,6 +219,9 @@ int errorCheck(int error){
 		} else if(error == -123){
 			printf("Error(-123): Invalid Handler Address.\n");
 		}
+		else if(error == -124){
+			printf("Error(-124): Invalid help_ command.\n");
+		}
 		
 		return -1;				//Common Error Value
 	}//end if
@@ -246,26 +269,28 @@ void storeHistory(char *userCom){
 void handler_help(){
 	printf("Here is a list of Help commands.\n\n");
 	printf("-----------Help-----------\n");
-	printf("help                  Displays help on the current acceptable commands.\n");
-	printf("version               Displays the current MPX Version Number.\n");
-	printf("set_date              Allows the user to set the current date.\n");
-	printf("get_date              Displays the current date.\n");
-	printf("display_MPX			  Displays the available MPX Process Files.\n");
-	printf("terminate_MPX		  Terminates the MPX program.\n");
-	printf("display_history		  Displays a history of previous User Commands.\n");
-	printf("change_prompt         Allows the user to change the prompt");
-	printf("\n");
+	printf("help\t\tDisplays help on the current acceptable commands.\n");
+	printf("help_\t\tDisplays information on a specified function.\n");
+	printf("version\t\tDisplays the current mpx OS Version Number.\n");
+	printf("set_date\tAllows the user to set the current date.\n");
+	printf("get_date\tDisplays the current date(MM/DD/YYYY format).\n");
+	printf("display_mpx\tDisplays the available mpx Process Files.\n");
+	printf("terminate_mpx\tTerminates the mpx OS.\n");
+	//printf("display_history		  Displays a history of previous User Commands.\n");
+	printf("change_prompt\tAllows the user to change the prompt symbol.");
+	printf("\n\n");
+	printf("Type \"help_\" then a command name to access addition information on that command.\n");
 	//Add a while loop perhaps with additional command info available via help files?..........................
 }//end handler_help
 
-//Display Current MPX Version #
+//Display Current mpx Version #
 int handler_version(){
 
 	//Print the current version number
-	printf("MPX Version %d.%d\n", version1,version2);
+	printf("mpx Version %d.%d\n", version1,version2);
 	
 	//Print the date current version was completed
-	printf("Completed 09/15/2010\n");
+	printf("Completed 09/17/2010\n");
 	
 	return 0;
 }//end handler_version
@@ -285,25 +310,30 @@ int handler_get_date(){
 }//end handler_get_Date
 
 
-//Display Directory of Available MPX Process Files
-void handler_display_MPX(){
+//Display Directory of Available mpx Process Files
+void handler_display_mpx(){
 	char *Buffer= NULL;
 	char BufferArray[80] = {0};
 	char currentFile[40];
 	long j = 0;
 	int error, i = 0;
 	int nameSize = 40;
-	printf("\nWelcome to MPX");
+	printf("\nWelcome to mpx");
 	printf("\nPlease enter the directory to be opened it cannot contain spaces\n");
 	Buffer = keyboardInput(0);
+	
 	while(i<sizeOfPointer(Buffer)){
 		//printf("%c",Buffer[i]);
 		BufferArray[i] = Buffer[i];
 		i++;
 	}
+	if(sizeOfPointer(Buffer)==0){
+		//printf("success");
+		getcwd(BufferArray,80);
+	}
 	error = sys_open_dir(BufferArray);
-	//errorCheck(error);
-	printf("%s",BufferArray);
+	errorCheck(error);
+	//printf("%s",BufferArray);
 	if(error ==0){
 		i = 0;
 		while(error == 0){
@@ -315,21 +345,28 @@ void handler_display_MPX(){
 			//printf("\n%d",error);
 		}
 		if(error != -113){
-			//errorCheck(error);
+			errorCheck(error);
 		}
 		else{
 			error = sys_close_dir();
-			//errorCheck(error);
+			errorCheck(error);
 			//printf("\n%d",error);
 			if(i == 0){
-				printf("No MPX files are in that directory\n");
+				if(Buffer[0] == 10){
+					printf("The current directory contains no mpx files\n");
+				}
+				else{
+					printf("No mpx files are in that directory\n");
+				}
 			}
+			
 		}
 	}
+	printf("\n");
 }
 
-//Terminate MPX Execution
-void handler_terminate_MPX(){
+//Terminate mpx Execution
+void handler_terminate_mpx(){
 	int flag = 0;
 	char *userAns; //n is No, y is Yes
 	while(flag ==0){
@@ -348,11 +385,8 @@ void handler_terminate_MPX(){
 			flag = 1;
 		}//end if
 	}
-}//end handler_terminate_MPX
+}//end handler_terminate_mpx
 
-void handler_readme(){
-	printf("\nReadme!");
-}
 
 
 /********* Extra Credit Commands ********/
@@ -383,7 +417,7 @@ void change_prompt(){
 	char *newPrompt;
 	int i= 0, newPromptSize;
 	
-	printf("\nEnter New Prompt String(Max 5 characters)\n");
+	printf("\nEnter New Prompt String(Max 4 characters)\n");
 	newPrompt = keyboardInput(5);
 	newPromptSize = sizeOfPointer(newPrompt);
 	while(i<4){
@@ -641,7 +675,7 @@ int handler_set_date(){
 		day = (Buffer[2] - 48)*10 + Buffer[3] - 48;
 		year = (Buffer[4] - 48)*1000 + (Buffer[5] - 48)*100 + (Buffer[6] - 48)*10 + Buffer[7] - 48;
 		leapYear = year%4;
-		if(month > 12|| day > 1 || month > 1){
+		if(month > 12|| day < 1 || month < 1){
 			flag = 1;
 		}
 		if(leapYear==0){
@@ -713,9 +747,37 @@ int handler_set_date(){
 		if(date.month != month || date.day != day || date.year != year){
 			errorCheck(-109);
 		}	
-	}else{
+	}
+	else{
 		errorCheck(-108);
 	}
 	return 0;
 }
+
+void handler_help_function(char funName[]){
+	printf("\n");
+	if(strcmp(funName,"version")==0){
+		printf("The version command simply displays the current working version number and the date it was finalized on. This command is called by typing \"version\". Possible Error: Invalid help_ command.");
+	}
+	else if(strcmp(funName,"display_mpx")==0){
+		printf("The display_mpx command is used to locate mpx files in a directory. The directory can be specified or the current directory can be selected by pressing enter once the prompt for directory has come up. Then all mpx files will be displayed with name, buffer size used, and file size. This command may be called by typing \"display_mpx\" in the command prompt. Possible Errors: Invalid Directory, Directory Not Open, No More Directory Entries, Read Failed, Name To Long For Buffer, No Directory Is Open.");
+	}
+	else if(strcmp(funName,"get_date")==0){
+		printf("The get_date command grabs the set date and displays it. If there is no set date then the system date is acquired and displayed. This command can be accessed by typing \"get_date\" in the command prompt.");
+	}
+	else if(strcmp(funName,"set_date")==0){
+		printf("The set_date command takes in user input in the form of a string of numbers(MMDDYYYY) and sets that as the current date. The set_date command can be accessed by typing \"set_date\" in the command prompt. Possible Errors: Invalid Date, Date Not Changed.");
+	}
+	else if(strcmp(funName,"change_prompt")==0){
+		printf("The terminate_mpx command exits the mpx os after it confirms with the user that the os is desired to exit. After confirmation allocated memory is cleared and the os terminates. This command may be called by typing either \"quit\",\"exit\", or \"terminate_mpx\"in the command prompt.");
+	}
+	else if(strcmp(funName,"terminate_mpx")==0){
+		printf("The change_prompt command replaces the standard :> prompt with any prompt that is desired and is 4 characters or less. This command is initiated by typing \"change_prompt\"in the command prompt.");
+	}
+	else{
+		errorCheck(-124);
+	}
+	printf("\n");
+}
+
 
