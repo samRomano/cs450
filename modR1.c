@@ -1,5 +1,5 @@
 //Function Fresco: Alex Hamilton, Luis Armendariz, Sam Romano
-//9-15-10
+//9-16-10
 //CS 450 Module R1: User Interface - Command Handler   (COMHAN)
 
 #include "mpx_supt.h"
@@ -14,7 +14,6 @@
 void commandHandler(void);
 
 void displayWelcome(void);
-void commandPrompt(void);
 void displayClosing(void);
 void commandCleanup(void);
 int errorCheck(int);
@@ -23,28 +22,31 @@ void storeHistory(char*);
 void handler_help(void);
 int handler_version(void);
 int handler_get_Date(void);
-void handler_set_Date(void);
+int handler_set_Date(void);
 void handler_display_MPX();
 void handler_terminate_MPX(void);
-void handler_readme();
+void handler_readme(void);
+void handler_display_History(void);
 
-char* keyboardInput2();
+char* keyboardInput2(void);
 char* keyboardInput(int);
-void change_prompt();
+void change_prompt(void);
 int cmpP2S(char *, char[]);
 int sizeOfPointer(char*);
+int sizeOfArray(char[]);
+void copyPtr(char*, char*);
 
 
 /******** Parameter List ********/
-int version1 = 0;
-int version2 =4; 							//Current MPX Version #
-int comDone = 0;							//Command Handler Loop Indictor - Indicates whether the user is ready to terminate the program.
-char *userInput;							//Current User Input
-char *userCommand;
-int error = 0;								//Variable for Error Handling
+int version1 = 0;								//Current MPX Version # - Ones Digit
+int version2 = 5; 								//Current MPX Version # - Decimal Digit
+int comDone = 0;								//Command Handler Loop Indictor - Indicates whether the user is ready to terminate the program.
+char *userInput;								//Current User Input
+char *userCommand;								//Current UserCommand
+int error = 0;									//Variable for Error Handling
 
-int bufSize = 80;
-char prompt[5] = ":>";
+int bufSize = 80;								//User Command Buffer Size
+char prompt[5] = ":>";							//Current Prompt
 
 char *historyList[historySize];
 int historyQueue_Head = 0;
@@ -62,33 +64,24 @@ int historyCounter = 0;
 */
 
 void main(){
-	sys_init(MODULE_R1);			    	//1. Initialize
-	commandHandler();				    	//2. Call commandHandler function
+	sys_init(MODULE_R1);			    		//1. Initialize
+	commandHandler();				    		//2. Call commandHandler function
 }//end main
 
 
 /******** Command Handler ********/
 void commandHandler(){
-	int i = 0;
 	int userCommandSize;
-	displayWelcome();						//2.1 Display the Welcome Message
+	displayWelcome();							//2.1 Display the Welcome Message
 
-	while(comDone !=1){						//2.2 Begin While Loop for User Commands
-		//commandPrompt();					//2.2.1 Request for User Input
+	while(comDone !=1){							//2.2 Begin While Loop for User Commands
+		
 		printf("\nPlease enter the command to be executed(case sensitive).\n");
-		userCommand = keyboardInput(0);      //2.2.2 Accept command from User
-		printf("The userCommand is: ");
-		userCommandSize = sizeOfPointer(userCommand);
-		//printf("%d",userCommandSize);
-		i = 0;
-		while(i<userCommandSize){
-			printf("%c", userCommand[i]); //test1
-			i++;
-		}
+		userCommand = keyboardInput(0);      	//2.2.1 Request User Input & Accept Command from User
 		printf("\n");
 		
-		//Temporary Decision Statement
-		if(cmpP2S(userCommand, "help") == 1||cmpP2S(userCommand, "/?") == 1){
+		//Decision Statement
+		if(cmpP2S(userCommand, "help") == 1 || cmpP2S(userCommand, "/?") == 1){
 			handler_help();
 		} 
 		else if(cmpP2S(userCommand, "version") == 1){
@@ -103,6 +96,9 @@ void commandHandler(){
 		else if(cmpP2S(userCommand, "display_MPX") == 1){
 			handler_display_MPX();
 		} 
+		else if(cmpP2S(userCommand, "display_History") == 1){
+			handler_display_History();
+		}
 		else if(cmpP2S(userCommand, "terminate_MPX") == 1){
 			handler_terminate_MPX();
 		} 
@@ -115,7 +111,6 @@ void commandHandler(){
 		else {
 			printf("Invalid Command.\n");
 		}//end if - Decision
-		
 	}//end while
 	displayClosing();						//2.2.4 Display closing message
 	commandCleanup();						//2.2.5 Cleanup Allocated Memory
@@ -126,25 +121,24 @@ void commandHandler(){
 
 
 /******** Command Handler Functions ********/
+//Displays Welcome Message
 void displayWelcome(){
 	printf("Welcome to the Functional Fresco MPX OS.\n");
 }//end displayWelcome
 
-void commandPrompt(){
-	printf("Please enter a command to be executed: ");
-	printf(">");
-}//end commandPrompt
-
+//Displays Closing Message
 void displayClosing(){
-	printf("Thank you for using the Functional Fresco MPX OS.\nHave a nice day! :)\n");
+	printf("Thank you for using the Functional Fresco MPX OS.\n Have a nice day! :)\n");
 }//end displayClosing
 
+//Frees Allocated Memory
 void commandCleanup(){
 	//int error = sys_free_mem(userCommand); //!NOTE! - Display Errors
 	//error = errorCheck(error);
 	printf("The error number is %d.\n", error); //test3------------------------------------------
 }//end commandCleanup
 
+//Displays Print Statements for All Errors & Returns Common Error Code (0 No Error, -1 Error)
 int errorCheck(int error){
 	if(error == 0){
 		return 0;				//No Error
@@ -201,14 +195,17 @@ int errorCheck(int error){
 	}//end if
 }//end errorCheck
 
-void storeHistory(char *userCommand){
+//Stores History of User Commands
+void storeHistory(char *userCom){
+	char *userInput;
+	copyPtr(userInput, userCom);							//Copy Pointer Information from userCom to userInput
 	
 	if(historyCounter == 0){
-		*historyList[historyQueue_Head] = *userCommand;		//Store User Command to Queue Head
+		*historyList[historyQueue_Head] = *userInput;		//Store User Command to Queue Head
 		historyQueue_Tail = historyQueue_Tail + 1;			//Increment Queue Tail to 1
 		historyCounter = historyCounter + 1;
 	} else if(historyCounter <= 9){
-		*historyList[historyQueue_Tail] = *userCommand;		//Store User Command to Queue Tail
+		*historyList[historyQueue_Tail] = *userInput;		//Store User Command to Queue Tail
 		historyQueue_Tail = historyQueue_Tail + 1;			//Increment Queue Tail by 1
 		historyCounter = historyCounter + 1;
 	} else if(historyCounter == 10){
@@ -217,7 +214,7 @@ void storeHistory(char *userCommand){
 			historyQueue_Head = historyQueue_Head + 1;
 		}//end if
 		
-		*historyList[historyQueue_Tail] = *userCommand;
+		*historyList[historyQueue_Tail] = *userInput;
 		historyQueue_Tail = historyQueue_Tail + 1;
 		historyQueue_Head = historyQueue_Head + 1;
 	} else if(historyCounter > 10){
@@ -228,7 +225,7 @@ void storeHistory(char *userCommand){
 			historyQueue_Tail = 0;
 		}//end if
 		
-		*historyList[historyQueue_Tail] = *userCommand;
+		*historyList[historyQueue_Tail] = *userInput;
 		historyQueue_Tail = historyQueue_Tail + 1;
 		historyQueue_Head = historyQueue_Head + 1;
 	}//end if
@@ -269,26 +266,20 @@ int handler_get_Date(){
 	//Declare new date_rec variable
 	date_rec date;
 	
-	//Declare a pointer of type pointer to date_rec
-	date_rec *dptr;
-	
-	//Set pointer to point to date_rec date
-	dptr = &date;
-	
-	//Call system function with pointer passed in
+	//Call system function with date address passed in
 	sys_get_date(&date);
 	
 	//Print date by accessing the attributes of the pointer to the struct
 	printf("The current date is: %d/%d/%d\n", date.month, date.day, date.year);
 
-	printf("%c",dptr[0]);
 	return 0;
 }//end handler_get_Date
 
 //Set Date
-void handler_set_Date(){
+int handler_set_Date(){
 	//Use built in function.............................
-	printf("Enter the day (dd): \n");
+	//printf("Enter the day (dd): \n");
+	return 0;
 }//end handler_set_Date
 
 //Display Directory of Available MPX Process Files
@@ -356,6 +347,12 @@ void handler_terminate_MPX(){
 	}
 }//end handler_terminate_MPX
 
+void handler_readme(){
+	printf("\nReadme!");
+}
+
+
+/********* Extra Credit Commands ********/
 //Display History of User Commands
 void handler_display_History(){
 	int historyDisplay_Head = historyQueue_Head;
@@ -376,13 +373,30 @@ void handler_display_History(){
 	printf("%s\n", *historyList[historyDisplay_Tail]);
 }//end handler_display_History
 
-void handler_readme(){
-	printf("\nReadme!");
+//Allows User to Change the Prompt Character
+void change_prompt(){
+	char *newPrompt;
+	int i= 0, newPromptSize;
+	
+	printf("\nEnter New Prompt String(Max 5 characters)\n");
+	newPrompt = keyboardInput2(5);
+	newPromptSize = sizeOfPointer(newPrompt);
+	while(i<4){
+		//printf("\nWord:%c Buff:%c",prompt[i],newPrompt[i]);
+		if(i<newPromptSize){
+			prompt[i] = newPrompt[i];
+		}
+		else {
+			prompt[i] = 0;
+		}
+		//printf("\nWord:%c Buff:%c",prompt[i],newPrompt[i]);
+		i++;
+	}
 }
 
 
-//Gets input from the Keyboard
-char* keyboardInput2 (){
+//Gets User Input from Keyboard - Buffer Size=80
+char* keyboardInput2(){
 	char *Buffer= NULL;
 	char *Buffer2 = NULL;
 	int bufSize2 = 0;
@@ -435,7 +449,8 @@ char* keyboardInput2 (){
 	}
 }
 
-char* keyboardInput (int bufSize2){
+//Gets User Input from Keyboard - Set Buffer Size
+char* keyboardInput(int bufSize2){
 	char *Buffer= NULL;
 	char *Buffer2 = NULL;
 	int WordSize;
@@ -509,7 +524,7 @@ char* keyboardInput (int bufSize2){
 	
 }
 
-//Compares Keyboard Output to String
+//Compares User Input to String (1 True, 0 False)
 int cmpP2S(char *Buffer, char Word[]){
 	int WordSize, BufferSize;
 	int Temp;
@@ -557,6 +572,7 @@ int cmpP2S(char *Buffer, char Word[]){
 	}
 }	
 
+//Gets Size of a Pointer Variable
 int sizeOfPointer(char *Buffer){
 	int i = 0;
 	while(i<bufSize){
@@ -569,6 +585,7 @@ int sizeOfPointer(char *Buffer){
 	return -1;
 }
 
+//Gets Size of an Array
 int sizeOfArray(char Array[]){
 	int i = 0;
 	while(i<80){
@@ -581,22 +598,34 @@ int sizeOfArray(char Array[]){
 	return -1;
 }
 
-void change_prompt(){
-	char *newPrompt;
-	int i= 0, newPromptSize;
-	
-	printf("\nEnter New Prompt String(Max 4 characters)\n");
-	newPrompt = keyboardInput2(5);
-	newPromptSize = sizeOfPointer(newPrompt);
-	while(i<4){
-		//printf("\nWord:%c Buff:%c",prompt[i],newPrompt[i]);
-		if(i<newPromptSize){
-			prompt[i] = newPrompt[i];
-		}
-		else {
-			prompt[i] = 0;
-		}
-		//printf("\nWord:%c Buff:%c",prompt[i],newPrompt[i]);
-		i++;
-	}
-}
+//Copy information to Pointer X from Pointer Y. (Pointer X, Pointer Y)
+void copyPtr(char *userInp, char *userCom){
+	int userCom_Size;
+	int i = 0;											//While Loop Variable
+	userCom_Size = sizeOfPointer(userCom);			//Get Size of User Command
+
+	while(i < userCom_Size){
+		*(userInp + i) = *(userCom + i);
+		i = i + 1;
+	}//end while
+}//end copyPtr
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
