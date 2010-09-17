@@ -28,8 +28,8 @@ void handler_display_MPX();
 void handler_terminate_MPX(void);
 void handler_readme();
 
-char* keyboardInput2(int);
-char* keyboardInput();
+char* keyboardInput2();
+char* keyboardInput(int);
 void change_prompt();
 int cmpP2S(char *, char[]);
 int sizeOfPointer(char*);
@@ -68,7 +68,7 @@ void commandHandler(){
 	while(comDone !=1){						//2.2 Begin While Loop for User Commands
 		//commandPrompt();					//2.2.1 Request for User Input
 		printf("\nPlease enter the command to be executed(case sensitive).\n");
-		userCommand = keyboardInput();      //2.2.2 Accept command from User
+		userCommand = keyboardInput(0);      //2.2.2 Accept command from User
 		printf("The userCommand is: ");
 		userCommandSize = sizeOfPointer(userCommand);
 		//printf("%d",userCommandSize);
@@ -80,7 +80,7 @@ void commandHandler(){
 		printf("\n");
 		
 		//Temporary Decision Statement
-		if(cmpP2S(userCommand, "help") == 1||cmpP2S(userCommand, "?") == 1){
+		if(cmpP2S(userCommand, "help") == 1||cmpP2S(userCommand, "/?") == 1){
 			handler_help();
 		} 
 		else if(cmpP2S(userCommand, "version") == 1){
@@ -111,7 +111,7 @@ void commandHandler(){
 	}//end while
 	displayClosing();						//2.2.4 Display closing message
 	commandCleanup();						//2.2.5 Cleanup Allocated Memory
-	keyboardInput();
+	keyboardInput(0);
 	sys_exit();								//2.2.6 Return to host system
 }
 
@@ -292,7 +292,7 @@ void handler_display_MPX(){
 	int nameSize = 40;
 	printf("\nWelcome to MPX");
 	printf("\nPlease enter the directory to be opened\n");
-	Buffer = keyboardInput();
+	Buffer = keyboardInput(-1);
 	while(i<sizeOfPointer(Buffer)){
 		BufferArray[i] = Buffer[i];
 		i++;
@@ -331,7 +331,7 @@ void handler_terminate_MPX(){
 	while(flag ==0){
 		printf("\nAre you sure you would like to exit the system (y or n):\n");
 		
-		userAns = keyboardInput(); 		//Chang this to sys_req-------------------------------------------------
+		userAns = keyboardInput(0); 		//Chang this to sys_req-------------------------------------------------
 
 		if(cmpP2S(userAns,"y")==1){
 			comDone = 1;
@@ -372,7 +372,7 @@ void handler_readme(){
 
 
 //Gets input from the Keyboard
-char* keyboardInput (){
+char* keyboardInput2 (){
 	char *Buffer= NULL;
 	char *Buffer2 = NULL;
 	int bufSize2 = 0;
@@ -391,7 +391,7 @@ char* keyboardInput (){
 				break;
 			}
 			else{
-				if(Temp ==95 ||Temp >=47 && Temp <59|| Temp >=65 && Temp<91 || Temp >= 92&& Temp < 93 || Temp >=97 && Temp <123){
+				if(Temp>=33 && Temp <127){
 					//printf("\nc:%c b:%c",Buffer[j],Temp);
 					Buffer[j] = Buffer2[i];
 					j++;
@@ -412,7 +412,7 @@ char* keyboardInput (){
 				break;
 			}
 			else{
-				if(Temp ==95 ||Temp >=47 && Temp <59|| Temp >=65 && Temp<91 || Temp >= 92&& Temp < 93 || Temp >=97 && Temp <123){
+				if(Temp>=33 && Temp <127){
 					//printf("\nc:%c b:%c",Buffer[j],Temp);
 					Buffer[j] = Buffer2[i];
 					j++;
@@ -425,7 +425,7 @@ char* keyboardInput (){
 	}
 }
 
-char* keyboardInput2 (int bufSize2){
+char* keyboardInput (int bufSize2){
 	char *Buffer= NULL;
 	char *Buffer2 = NULL;
 	int WordSize;
@@ -433,7 +433,7 @@ char* keyboardInput2 (int bufSize2){
 	int flag;
 	int i = 0;
 	int j = 0;
-	if(bufSize2<1){
+	if(bufSize2==0){
 		printf("%s",prompt);
 		sys_req(READ,TERMINAL,Buffer2,&bufSize);
 
@@ -443,7 +443,28 @@ char* keyboardInput2 (int bufSize2){
 				break;
 			}
 			else{
-				if(Temp ==95 ||Temp >=47 && Temp <59|| Temp >=65 && Temp<91 || Temp >= 92&& Temp < 93 || Temp >=97 && Temp <123){
+				if(Temp>=33 && Temp <127){
+					//printf("\nc:%c b:%c",Buffer[j],Temp);
+					Buffer[j] = Buffer2[i];
+					j++;
+					//printf("%d",j);
+				}
+			}
+			i++;
+		}
+		return Buffer;
+	}
+	else if(bufSize2 >0){
+		printf("%s",prompt);
+		sys_req(READ,TERMINAL,Buffer2,&bufSize2);
+
+		while(i<bufSize2){
+			Temp = Buffer2[i];
+			if(Temp==10){
+				break;
+			}
+			else{
+				if(Temp>=33 && Temp <127){
 					//printf("\nc:%c b:%c",Buffer[j],Temp);
 					Buffer[j] = Buffer2[i];
 					j++;
@@ -456,15 +477,15 @@ char* keyboardInput2 (int bufSize2){
 	}
 	else{
 		printf("%s",prompt);
-		sys_req(READ,TERMINAL,Buffer2,&bufSize2);
+		sys_req(READ,TERMINAL,Buffer2,&bufSize);
 
-		while(i<bufSize2){
+		while(i<bufSize){
 			Temp = Buffer2[i];
 			if(Temp==10){
 				break;
 			}
 			else{
-				if(Temp ==95 ||Temp >=47 && Temp <59|| Temp >=65 && Temp<91 || Temp >= 92&& Temp < 93 || Temp >=97 && Temp <123){
+				if(Temp>=32 && Temp <127){
 					//printf("\nc:%c b:%c",Buffer[j],Temp);
 					Buffer[j] = Buffer2[i];
 					j++;
@@ -475,6 +496,7 @@ char* keyboardInput2 (int bufSize2){
 		}
 		return Buffer;
 	}
+	
 }
 
 //Compares Keyboard Output to String
@@ -553,7 +575,7 @@ void change_prompt(){
 	char *newPrompt;
 	int i= 0, newPromptSize;
 	
-	printf("\nEnter New Prompt String(Max 5 characters)\n");
+	printf("\nEnter New Prompt String(Max 4 characters)\n");
 	newPrompt = keyboardInput2(5);
 	newPromptSize = sizeOfPointer(newPrompt);
 	while(i<4){
