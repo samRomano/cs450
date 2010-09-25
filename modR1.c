@@ -48,7 +48,7 @@
 			
 ************************************************************************
 
- Change Log:
+Change Log:
 
 	09/11/10  lca	original version
 	09/13/10  lca	Completed commandHandler Function
@@ -145,6 +145,9 @@ int sizeOfArray(char[]);
 /* copyPtr: Copies a Pointer */
 void copyPtr(char*, char*);
 
+/* printInterrupt: This is an informal interrupt for pagination*/
+void printInterrupt();
+
 
 /******** Parameter List ********/
 int version1 = 1;								//Current MPX Version # - Ones Digit
@@ -154,8 +157,9 @@ char *userInput;								//Current User Input
 char *userCommand;								//Current UserCommand
 int error = 0;									//Variable for Error Handling
 
-int bufSize = 80;								//User Command Buffer Size
+int bufSize = 500;								//User Command Buffer Size
 char prompt[5] = ":>";							//Current Prompt
+int printConstant = 0;							//pagination constant
 
 char *historyList[historySize];					//Command History - Queue
 int historyQueue_Head = 0;						//Command History - Queue Head
@@ -210,62 +214,62 @@ void commandHandler(){
 	while(comDone !=1){							//2.2 Begin While Loop for User Commands
 		userCommand = NULL;
 		//if( fix ==0){
-			printf("\nPlease enter the command to be executed(case sensitive).\n");
-			userCommand = keyboardInput(0);      	//2.2.1 Request User Input & Accept Command from User
-			printf("\n");
-			
-			
-			//Decision Statement
-			if(cmpP2S(userCommand, "help") == 1 || cmpP2S(userCommand, "/?") == 1){
-				handler_help();
-			} 
-			else if(cmpP2S(userCommand, "version") == 1){
-				handler_version();
-			} 
-			else if(cmpP2S(userCommand, "set_date") == 1){
-				handler_set_date();
-				//fix = 1;
-			} 
-			else if(cmpP2S(userCommand, "get_date") == 1){
-				handler_get_date();
-			} 
-			else if(cmpP2S(userCommand, "display_mpx") == 1){
-				handler_display_mpx();
-			} 
-			//else if(cmpP2S(userCommand, "display_history") == 1){
-			//	handler_display_history();
-			//}
-			else if(cmpP2S(userCommand, "terminate_mpx") == 1||cmpP2S(userCommand, "exit") == 1||cmpP2S(userCommand, "quit") == 1){
-				handler_terminate_mpx();
-			} 
-			else if(cmpP2S(userCommand, "change_prompt") == 1){
-				change_prompt();
-				//fix = 1;
-			} 
-			else if(cmpP2S(userCommand, "help_version")==1){
-				handler_help_function("version");
-			}
-			else if(cmpP2S(userCommand, "help_set_date")==1){
-				handler_help_function("set_date");
-			}
-			else if(cmpP2S(userCommand, "help_get_date")==1){
-				handler_help_function("get_date");
-			}
-			else if(cmpP2S(userCommand, "help_display_mpx")==1){
-				handler_help_function("display_mpx");
-			}
-			else if(cmpP2S(userCommand, "help_terminate_mpx")==1){
-				handler_help_function("terminate_mpx");
-			}
-			else if(cmpP2S(userCommand, "help_change_prompt")==1){
-				handler_help_function("change_prompt");
-			}
-			/*else if(cmpP2S(userCommand, "exit")==1){
+		printf("\nPlease enter the command to be executed(case sensitive).\n");
+		userCommand = keyboardInput(0);      	//2.2.1 Request User Input & Accept Command from User
+		printf("\n");
+		
+		
+		//Decision Statement
+		if(cmpP2S(userCommand, "help") == 1 || cmpP2S(userCommand, "/?") == 1){
+			handler_help();
+		} 
+		else if(cmpP2S(userCommand, "version") == 1){
+			handler_version();
+		} 
+		else if(cmpP2S(userCommand, "set_date") == 1){
+			handler_set_date();
+			//fix = 1;
+		} 
+		else if(cmpP2S(userCommand, "get_date") == 1){
+			handler_get_date();
+		} 
+		else if(cmpP2S(userCommand, "display_mpx") == 1){
+			handler_display_mpx();
+		} 
+		//else if(cmpP2S(userCommand, "display_history") == 1){
+		//	handler_display_history();
+		//}
+		else if(cmpP2S(userCommand, "terminate_mpx") == 1||cmpP2S(userCommand, "exit") == 1||cmpP2S(userCommand, "quit") == 1){
+			handler_terminate_mpx();
+		} 
+		else if(cmpP2S(userCommand, "change_prompt") == 1){
+			change_prompt();
+			//fix = 1;
+		} 
+		else if(cmpP2S(userCommand, "help_version")==1){
+			handler_help_function("version");
+		}
+		else if(cmpP2S(userCommand, "help_set_date")==1){
+			handler_help_function("set_date");
+		}
+		else if(cmpP2S(userCommand, "help_get_date")==1){
+			handler_help_function("get_date");
+		}
+		else if(cmpP2S(userCommand, "help_display_mpx")==1){
+			handler_help_function("display_mpx");
+		}
+		else if(cmpP2S(userCommand, "help_terminate_mpx")==1){
+			handler_help_function("terminate_mpx");
+		}
+		else if(cmpP2S(userCommand, "help_change_prompt")==1){
+			handler_help_function("change_prompt");
+		}
+		/*else if(cmpP2S(userCommand, "exit")==1){
 				break;
 			}*/ 
-			else {
-				printf("Invalid Command.\n");
-			}//end if - Decision
+		else {
+			printf("Invalid Command.\n");
+		}//end if - Decision
 		/*}
 		else {
 			sys_req(READ,TERMINAL,userCommand,&bufSize);
@@ -300,7 +304,7 @@ void displayWelcome(){
 	printf("Welcome to the Functional Fresco mpx OS.\n");
 }//end displayWelcome
 
-	/**
+/**
 	Procedure: displayClosing
 
 	Purpose: Displays Closing Message
@@ -405,10 +409,9 @@ int errorCheck(int error){
 			printf("Error(-122): Memory Free Error.\n");
 		} else if(error == -123){
 			printf("Error(-123): Invalid Handler Address.\n");
-		}
-		else if(error == -124){
+		} else if(error == -124){
 			printf("Error(-124): Invalid help_ command.\n");
-		}
+		} 
 		
 		return -1;				//Common Error Value
 	}//end if
@@ -623,7 +626,7 @@ int handler_set_date(){
 
 	while(i<8){
 		if(Buffer[i] < 48 || Buffer[i] > 57){
-			printf("The date you entered is invalid!");
+			//printf("The date you entered is invalid!");
 			flag = 1;
 		}
 		i++;		
@@ -633,12 +636,14 @@ int handler_set_date(){
 		month = (Buffer[0] - 48)*10 + Buffer[1] - 48;
 		day = (Buffer[2] - 48)*10 + Buffer[3] - 48;
 		year = (Buffer[4] - 48)*1000 + (Buffer[5] - 48)*100 + (Buffer[6] - 48)*10 + Buffer[7] - 48;
-		leapYear = year%4;
+		if(year%4 == 0 && year%100 ==0 && year% 400 == 0){
+			leapYear = 1;
+		}
 		if(month > 12|| day < 1 || month < 1){
 			flag = 1;
 		}
 		if(leapYear==0){
-			if(month < 13 && month == 02 && day > 29){
+			if(month < 13 && month == 02 && day > 28){
 				flag = 1;
 			}else if(month <13 && month == 1 && day > 31){
 				flag = 1;
@@ -664,7 +669,7 @@ int handler_set_date(){
 				flag = 1;	
 			}
 		}else{
-			if(month < 13 && month == 02 && day > 28){
+			if(month < 13 && month == 02 && day > 29){
 				flag = 1;
 			}else if(month <13 && month == 1 && day > 31){
 				flag = 1;
@@ -753,11 +758,13 @@ void handler_display_mpx(){
 	//printf("%s",BufferArray);
 	if(error ==0){
 		i = 0;
+		printConstant =0;
 		while(error == 0){
 			error = sys_get_entry(currentFile,nameSize,&j);
 			if(error == 0){
 				i++;
 				printf("\nFilename:%s       \tBuffersize:%d\tFile Size:%ld",currentFile,nameSize,j);
+				printInterrupt();
 			}
 			//printf("\n%d",error);
 		}
@@ -856,8 +863,27 @@ void handler_display_history(){
 
 	Globals: None
 
-	Errors: None
+	Errors: Invalid New Prompt
 **/
+/*void change_prompt(){
+	char *newPrompt;
+	int newPromptSize;
+	printf("\nEnter New Prompt String(1 or 2 characters)\n");
+	newPrompt = keyboardInput(0);
+	newPromptSize = sizeOfPointer(newPrompt);
+	//printf("%d",newPromptSize);
+	if(newPromptSize ==1&& newPrompt[0] > 33){
+		prompt[0] = newPrompt[0];
+		prompt[1] = 0;
+	}
+	else if(newPromptSize ==2&& newPrompt[0] > 33&& newPrompt[1] > 33){
+		prompt[0] = newPrompt[0];
+		prompt[1] = newPrompt[1];
+	}
+	else{
+		errorCheck(-125);
+	}
+}*/
 void change_prompt(){
 	char *newPrompt;
 	int i= 0, newPromptSize;
@@ -880,78 +906,11 @@ void change_prompt(){
 
 
 /**
-	Procedure: keyboardInput2
-
-	Purpose: Gets User Input from Keyboard - Static Buffer Size (Buffer Size=80)
-
-	Parameters: None  
-
-	Return value: String of Keyboard Input
-
-	Calls: sys_req
-
-	Globals: bufSize, prompt
-
-	Errors: None
-**/
-char* keyboardInput2 (){
-	char *Buffer= NULL;
-	char *Buffer2 = NULL;
-	int bufSize2 = 0;
-	int WordSize;
-	int Temp;
-	int flag;
-	int i = 0;
-	int j = 0;
-	if(bufSize2<1){
-		printf("%s",prompt);
-		sys_req(READ,TERMINAL,Buffer2,&bufSize);
-
-		while(i<bufSize){
-			Temp = Buffer2[i];
-			if(Temp==10){
-				break;
-			}
-			else{
-				if(Temp>=33 && Temp <127){
-					//printf("\nc:%c b:%c",Buffer[j],Temp);
-					Buffer[j] = Buffer2[i];
-					j++;
-					//printf("%d",j);
-				}
-			}
-			i++;
-		}
-		return Buffer;
-	}
-	else{
-		printf("%s",prompt);
-		sys_req(READ,TERMINAL,Buffer2,&bufSize2);
-
-		while(i<bufSize2){
-			Temp = Buffer2[i];
-			if(Temp==10){
-				break;
-			}
-			else{
-				if(Temp>=33 && Temp <127){
-					//printf("\nc:%c b:%c",Buffer[j],Temp);
-					Buffer[j] = Buffer2[i];
-					j++;
-					//printf("%d",j);
-				}
-			}
-			i++;
-		}
-		return Buffer;
-	}
-}
-/**
 	Procedure: keyboardInput
 
 	Purpose: Gets User Input from Keyboard - Dynamic Buffer Size
 
-	Parameters: bufSize2(0 or -integers is default buffer size of 80 but -integers can include spaces, +integers will become buffer size)  
+	Parameters: zeroAllow(==0 no blanks's allowed in pointer, !=0 blanks's allowed)
 
 	Return value: String of Keyboard Input
 
@@ -961,56 +920,44 @@ char* keyboardInput2 (){
 
 	Errors: None
 **/
-char* keyboardInput (int bufSize2){
+char* keyboardInput (int zeroAllow){
 	char *Buffer= NULL;
 	char *Buffer2 = NULL;
+	
 	int WordSize;
 	int Temp;
 	int flag;
 	int i = 0;
 	int j = 0;
-	if(bufSize2==0){
-		printf("%s",prompt);
-		sys_req(READ,TERMINAL,Buffer2,&bufSize);
+	if(zeroAllow==0){
+	printf("%s",prompt);
+	sys_req(READ,TERMINAL,Buffer2,&bufSize);
 
-		while(i<bufSize){
-			Temp = Buffer2[i];
-			if(Temp==10){
-				break;
+	while(i<bufSize){
+		Temp = Buffer2[i];
+		//printf("\n1:j:%d d:%d b:%d",j,Buffer[j],Temp);
+		if(Temp==10){
+			Buffer[j] = 10;
+			break;
+		}
+		else{
+			if(Temp>=33 && Temp <127){
+				//printf("\nc:%c b:%d",Buffer[j],Temp);
+				Buffer[j] = Temp;
+				//printf("\n2:j:%d d:%d b:%d",j,Buffer[j],Temp);
+				j++;
+				
+				//printf("%d",j);
 			}
-			else{
-				if(Temp>=33 && Temp <127){
-					//printf("\nc:%c b:%c",Buffer[j],Temp);
-					Buffer[j] = Buffer2[i];
-					j++;
-					//printf("%d",j);
-				}
 			}
 			i++;
-		}
-		return Buffer;
-	}
-	else if(bufSize2 >0){
-		printf("%s",prompt);
-		sys_req(READ,TERMINAL,Buffer2,&bufSize2);
-
-		while(i<bufSize2){
-			Temp = Buffer2[i];
-			if(Temp==10){
-				break;
+			
 			}
-			else{
-				if(Temp>=33 && Temp <127){
-					//printf("\nc:%c b:%c",Buffer[j],Temp);
-					Buffer[j] = Buffer2[i];
-					j++;
-					//printf("%d",j);
-				}
-			}
-			i++;
-		}
+		
+		
 		return Buffer;
-	}
+		}
+	
 	else{
 		printf("%s",prompt);
 		sys_req(READ,TERMINAL,Buffer2,&bufSize);
@@ -1018,6 +965,7 @@ char* keyboardInput (int bufSize2){
 		while(i<bufSize){
 			Temp = Buffer2[i];
 			if(Temp==10){
+				Buffer[j] = 10;
 				break;
 			}
 			else{
@@ -1032,6 +980,7 @@ char* keyboardInput (int bufSize2){
 		}
 		return Buffer;
 	}
+		
 	
 }
 
@@ -1180,6 +1129,18 @@ void copyPtr(char *userInp, char *userCom){
 }//end copyPtr
 
 //Set Date
+
+
+void printInterrupt(){
+	char * Good = NULL;
+	printConstant ++;
+	if(printConstant==24){
+		printf("\n<Press enter to see more files>");
+		sys_req(READ,TERMINAL,Good,&bufSize);
+		printConstant = 0;
+	}
+}
+
 
 
 
