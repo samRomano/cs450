@@ -67,7 +67,7 @@ Change Log:
 
 /* Logical Constants */
 #define historySize 10
-	#define SYSTEM 1
+#define SYSTEM 1
 #define APP 2   
 
 #define RUNNING 3
@@ -194,7 +194,7 @@ void printInterrupt();
 
 void insertLL(int);
 int deleteLL();
-void initPCB(PCBitem*, int);
+void createPCB(PCBitem*, int);
 
 
 
@@ -212,7 +212,7 @@ int error = 0;									//Variable for Error Handling
 int bufSize = 500;								//User Command Buffer Size
 char prompt[5] = ":>";							//Current Prompt
 int printConstant = 0;							//pagination constant
-
+char bufArray[500] = {0};
 char *historyList[historySize];					//Command History - Queue
 int historyQueue_Head = 0;						//Command History - Queue Head
 int historyQueue_Tail = 0;						//Command History - Queue Tail
@@ -1003,33 +1003,33 @@ char* keyboardInput (int zeroAllow){
 	int i = 0;
 	int j = 0;
 	if(zeroAllow==0){
-	printf("%s",prompt);
-	sys_req(READ,TERMINAL,Buffer2,&bufSize);
+		printf("%s",prompt);
+		sys_req(READ,TERMINAL,Buffer2,&bufSize);
 
-	while(i<bufSize){
-		Temp = Buffer2[i];
-		//printf("\n1:j:%d d:%d b:%d",j,Buffer[j],Temp);
-		if(Temp==10){
-			Buffer[j] = 10;
-			break;
-		}
-		else{
-			if(Temp>=33 && Temp <127){
-				//printf("\nc:%c b:%d",Buffer[j],Temp);
-				Buffer[j] = Temp;
-				//printf("\n2:j:%d d:%d b:%d",j,Buffer[j],Temp);
-				j++;
-				
-				//printf("%d",j);
+		while(i<bufSize){
+			Temp = Buffer2[i];
+			//printf("\n1:j:%d d:%d b:%d",j,Buffer[j],Temp);
+			if(Temp==10){
+				Buffer[j] = 10;
+				break;
 			}
+			else{
+				if(Temp>=33 && Temp <127){
+					//printf("\nc:%c b:%d",Buffer[j],Temp);
+					Buffer[j] = Temp;
+					//printf("\n2:j:%d d:%d b:%d",j,Buffer[j],Temp);
+					j++;
+					
+					//printf("%d",j);
+				}
 			}
 			i++;
 			
-			}
+		}
 		
 		
 		return Buffer;
-		}
+	}
 	
 	else{
 		printf("%s",prompt);
@@ -1053,7 +1053,7 @@ char* keyboardInput (int zeroAllow){
 		}
 		return Buffer;
 	}
-		
+	
 	
 }
 
@@ -1243,7 +1243,7 @@ void printInterrupt(){
 void insertLL(int dope){
 	item1 * temp;
 	PCBitem *PCBtemp= (PCBitem *)malloc(sizeof(PCBitem));;
-	initPCB(PCBtemp,dope);
+	createPCB(PCBtemp,dope);
 	
 	
 	
@@ -1304,20 +1304,70 @@ int deleteLL(){
 /* PCB commands
 
 */
-void initPCB(PCBitem * blah, int dope){
-	strncpy(blah->pName,"Good",20);
-	blah->pClass = 1;
-	blah->priority= dope;
-	blah->state = NULL;
-	blah->stackTop = NULL;
-	blah->stackBase = NULL;
+void createPCB(PCBitem * temp, int dope){
+	printf("Enter the PCB name: \n");
+	Buffer = keyboardInput(0);
+	
+	inputStr = pointer2Str(Buffer);
+	
+	inputInt =pointer2Int(Buffer);
+	strncpy(temp->pName,"Good",20);
+	temp->pClass = 1;
+	temp->priority= dope;
+	temp->state = NULL;
+	temp->stackTop = NULL;
+	temp->stackBase = NULL;
 	
 	//memory descriptors
-	blah->memSize = NULL;
-	blah->loadAddress = NULL;
-	blah->exeAddress = NULL;
+	temp->memSize = NULL;
+	temp->loadAddress = NULL;
+	temp->exeAddress = NULL;
+}
+char* pointer2Str(char * Buffer){
+	int BufferSize;
+	int Temp;
+	int flag= 0;
+	int i = 0;
+	int j = 0;
+	char BufferStr[bufSize] = {0}; 
+	BufferSize = sizeOfPointer(Buffer);
+	//printf("\n\n%d",WordSize);
+	if(BufferSize ==0){
+		printf("ERROR");
+		return "ERROR";
+	}
+	else{
+		while(i<BufferSize && Buffer[i] != 10){
+			BufferStr[i] = Buffer[i];
+			i++;
+		}
+		BufferStr[i] = 10;
+		while(j<bufSize-i){
+			bufferStr[j] = 0;
+		}
+		return BufferStr;
+	}	
 }
 
+int pointer2Int(char * Buffer){
+	int BufferSize;
+	int Temp;
+	int flag= 0;
+	int i = 0;
+	char BufferStr[bufSize] = {0}; 
+	BufferSize = sizeOfPointer(Buffer);
+	//printf("\n\n%d",WordSize);
+	if(BufferSize ==0){
+		printf("ERROR");
+		return "ERROR";
+	}
+	else{while(i<BufferSize && Buffer[i] != 10){
+			BufferStr[i] = Buffer[i];
+			return BufferStr;
+		}
+	}
+	
+}
 
 /*
 
