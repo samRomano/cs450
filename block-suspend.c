@@ -20,7 +20,7 @@ void block(){
 			} else{
 				
 				// Should remove the process from the ready queue (by calling remove_PCB)
-				error = remove_PCB(tempPCB);
+				error = remove_PCB(tempPCB->state, tempPCB);
 				error = errorCheck(error);
 				
 				// Places the process (PCB) in the blocked state
@@ -35,7 +35,7 @@ void block(){
 				}//end if
 				
 				// And place the process in the blocked queue (by calling insert_PCB)
-				error = insert_PCB(tempPCB);
+				error = insert_PCB(tempPCB->state, tempPCB);
 				error = errorCheck(error);
 				
 				// Display appropriate error or success message
@@ -77,7 +77,7 @@ void suspend(){
 			} else{
 				
 				// Should remove the process from the ready queue (by calling remove_PCB)
-				error = remove_PCB(tempPCB);
+				error = remove_PCB(tempPCB->state, tempPCB);
 				error = errorCheck(error);
 				
 				// Puts the PCB in the suspended state
@@ -88,7 +88,7 @@ void suspend(){
 				}//end if
 				
 				// Might require changing queues (from ready to suspended ready, for example) if 4 queues are used
-				error = insert_PCB(tempPCB);
+				error = insert_PCB(tempPCB->state, tempPCB);
 				error = errorCheck(error);
 				
 				// Display appropriate error or success message
