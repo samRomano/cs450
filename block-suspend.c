@@ -1,6 +1,6 @@
 void block(){
 	//char tempBuff[20];												//Temporary Input Buffer
-	char *tempPtr = NULL;												//Temporary Input Character Pointer
+	char *tempPtr = NULL;												//Temporary Input Character Pointer for PCB Name
 	PCBitem *tempPCB;													//Temporary PCB Item
 	int charCount = 0;													//Number of Characters in Process Name
 
