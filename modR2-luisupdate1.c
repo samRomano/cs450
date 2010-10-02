@@ -1395,7 +1395,6 @@ int handler_block(char name[]);
 
 
 
-
 /************ PCB Function List **********************/
 #define STACKSIZE 2048					//In Bytes (Size >= 1024)
 
@@ -1426,7 +1425,8 @@ int free_PCB(PCBitem *newPCB){
 PCBitem* setup_PCB(char new_pName[], int new_pPriority, int new_pClass){
 	//int pCheck = 0;  												//Variable for Parameter Check. (0 is Pass; -1 is Fail)
 	int charCount = 0;												//Number of Characters in Process Name
-	char tempBuff[500] = {0};										//Temporary input Buffer
+	//char *tempPtr = NULL;											//Temporary Input Character Pointer
+	//char tempBuff[500] = {0};										//Temporary Input Buffer
 	PCBitem *tempPCB;												//Temporary PCB Item
 	PCBitem *newPCB;												//Pointer to New PCB Item
 	
@@ -1453,9 +1453,9 @@ PCBitem* setup_PCB(char new_pName[], int new_pPriority, int new_pClass){
 			int newUserPriority = 0;		//The new PCB Priority from User
 			
 			printf("PCB Priority is Invalid. Please enter a priority between -128 and +127: ");
-			tempBuff = keyboardInput(0);
+			tempPtr = keyboardInput(0);
 
-			newUserPriority = pointer2Int(tempBuff);
+			newUserPriority = pointer2Int(tempPtr);
 
 			if((newUserPriority >= -128) && (newUserPriority =< 127)){
 				pCheck = 0;
@@ -1477,16 +1477,17 @@ PCBitem* setup_PCB(char new_pName[], int new_pPriority, int new_pClass){
 	
 	newPCB->state = READY;											// Sets state to ready, not suspended (this will change in later modules)
 	
-	temp->memSize = NULL;											// Sets remaining fields to defaults (Memory Descriptors)
-	temp->loadAddress = NULL;
-	temp->exeAddress = NULL;
+	newPCB->memSize = NULL;											// Sets remaining fields to defaults (Memory Descriptors)
+	newPCB->loadAddress = NULL;
+	newPCB->exeAddress = NULL;
 	
 	// Does not insert the PCB into a queue
 	return *newPCB;													// Returns PCB Pointer if successful, NULL if not successful (including if one of the parameters are not valid)
 }//end setup_PCB
 
 void block(){
-	char tempBuff[20];												//Temporary Input Buffer
+	//char tempBuff[20];												//Temporary Input Buffer
+	char *tempPtr = NULL;											//Temporary Input Character Pointer
 	PCBitem *tempPCB;												//Temporary PCB Item
 	int charCount = 0;												//Number of Characters in Process Name
 
@@ -1494,11 +1495,12 @@ void block(){
 
 	// Get PCB name from the user- check that the PCB with that name exists (Make sure that name is valid & exists!)
 	printf("Please enter the name of the PCB to block: ");
-	tempBuff = keyboardInput(0);									//Gets process name from User
-	charCount = (sizeOfPointer(tempBuff) + 1);						//Check that Name is Valid (Check to see if at least 8 chars. + Null Terminator)
+	tempPtr = keyboardInput(0);									//Gets process name from User
+	tempPtr = pointer2Str(tempPtr);								//Convert Character Pointer to Character String
+	charCount = (sizeOfPointer(tempPtr) + 1);					//Check that Name is Valid (Check to see if at least 8 chars. + Null Terminator)
 	
 	if((charCount >= 8)){
-		tempPCB = find_PCB(tempBuff);
+		tempPCB = find_PCB(tempPtr);
 		if(tempPCB != NULL){
 			
 			// Places the process (PCB) in the blocked state
