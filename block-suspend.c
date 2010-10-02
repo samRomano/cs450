@@ -64,7 +64,7 @@ void suspend(){
 	int charCount = 0;												//Number of Characters in Process Name
 
 	// Get PCB name from the user
-	printf("Please enter the name of the PCB to block: ");
+	printf("Please enter the name of the PCB to suspend: ");
 	tempPtr = keyboardInput(0);										//Gets process name from User
 	tempPtr = pointer2Str(tempPtr);									//Convert Character Pointer to Character String
 	charCount = sizeOfPointer(tempPtr);								//Get Name Size
