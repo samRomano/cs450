@@ -29,9 +29,9 @@ void setPriority(){
 				
 				//If the PCB is in the ready state, you will need to change the position of the PCB in the queue based upon its new priority
 				if(tempPCB->state == READY){
-					error = remove_PCB(tempPCB);						//Remove PCB from Ready Queue
+					error = remove_PCB(tempPCB->state, tempPCB);						//Remove PCB from Ready Queue
 					error = errorCheck(error);							//Perform Error Check
-					error = insert_PCB(tempPCB);						//Insert PCB into Ready Queue (so as to adjust for new Priority)
+					error = insert_PCB(tempPCB->state, tempPCB);						//Insert PCB into Ready Queue (so as to adjust for new Priority)
 					error = errorCheck(error);							//Perform Error Check
 				}//end if
 			}//end if
