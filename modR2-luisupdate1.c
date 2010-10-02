@@ -70,7 +70,7 @@ Change Log:
 
 #define SYSTEM 1
 #define APP 2
-   
+
 #define RUNNING 3
 #define READY 4
 #define BLOCKED 5
@@ -296,25 +296,25 @@ void commandHandler(){
 		userCommand = keyboardInput(0);      	//2.2.1 Request User Input & Accept Command from User
 		printf("\n");
 		
-	
+		
 		//Decision Statement
 		{if(cmpP2S(userCommand, "help") == 1 || cmpP2S(userCommand, "/?") == 1){
-			handler_help();
-		}
-		else if(cmpP2S(userCommand, "version") == 1){
-			handler_version();
-		} 
-		else if(cmpP2S(userCommand, "set_date") == 1){
-			handler_set_date();
-			//fix = 1;
-		} 
-		else if(cmpP2S(userCommand, "get_date") == 1){
-			handler_get_date();
-		} 
-		else if(cmpP2S(userCommand, "display_mpx") == 1){
-			handler_display_mpx();
-		} 
-		/*else if(cmpP2S(userCommand, "display_history") == 1){
+				handler_help();
+			}
+			else if(cmpP2S(userCommand, "version") == 1){
+				handler_version();
+			} 
+			else if(cmpP2S(userCommand, "set_date") == 1){
+				handler_set_date();
+				//fix = 1;
+			} 
+			else if(cmpP2S(userCommand, "get_date") == 1){
+				handler_get_date();
+			} 
+			else if(cmpP2S(userCommand, "display_mpx") == 1){
+				handler_display_mpx();
+			} 
+			/*else if(cmpP2S(userCommand, "display_history") == 1){
 			handler_display_history();
 		*/}
 		else if(cmpP2S(userCommand, "terminate_mpx") == 1||cmpP2S(userCommand, "exit") == 1||cmpP2S(userCommand, "quit") == 1){
@@ -1392,58 +1392,65 @@ int handler_block(char name[]);
 
 
 
-	
-	
-	
+
+
+
 
 /************ PCB Function List **********************/
 #define STACKSIZE 2048					//In Bytes (Size >= 1024)
 
 PCBitem* allocate_PCB(){
-	PCBitem newPCB = (PCBitem) sys_alloc_mem(sizeof(PCBitem) * 80);  //Creates & Allocates Memory for New PCB Item
-	PCBitem *ptrPCB;										         //Creates New PCB Pointer
-	*ptrPCB = newPCB;												 //Assigns PCB to PCB Pointer
+	PCBitem newPCB = NULL;											 //Creates New PCB Item & Initializes to NULL for Error Checking
+	newPCB =(PCBitem) sys_alloc_mem(sizeof(PCBitem));   			 //Allocates Memory for New PCB Item
+	//PCBitem *ptrPCB;										         //Creates New PCB Pointer
+	//*ptrPCB = newPCB;												 //Assigns PCB to PCB Pointer
 	
-	//PCBitem stack = (PCBitem) sys_alloc_mem(sizeof(PCBitem) * STACKSIZE); //Creates a PCB Stack & Allocates Memory for it 
+	newPCB->stackBase = sys_alloc_mem(STACKSIZE);					 //Allocates Memory for Stack (Looks at First Location)
+	newPCB->stackTop = (newPCB->stackBase) + STACKSIZE;				 //Sets Stack Top to top of Stack
 	
-	return ptrPCB;													 //Returns PCB Pointer
+	return newPCB;													 //Returns PCB for PCB Pointer
 }//end allocate_PCB
 
-//incomplete
 int free_PCB(PCBitem *newPCB){
 	int errorReturn = 0;											 //Creates Variable for Return Error
 
-	errorReturn = sys_free_mem(*newPCB);							 //Frees Memory Allocated to PCB
-
-	//Need to free Stack (a.k.a. Memory associated with base pointer
+	errorReturn = sys_free_mem(newPCB);							 	 //Frees Memory Allocated to PCB
+	errorReturn = errorCheck(errorReturn);
+	
+	errorReturn = sys_free_mem(newPCB->stackBase);					 //Need to free Stack (a.k.a. Memory associated with base pointer)
+	errorReturn = errorCheck(errorReturn);
 
 	return errorReturn;												 //Returns any error code found
 }//end free_PCBULL
 
-//incomplete
 PCBitem* setup_PCB(char new_pName[], int new_pPriority, int new_pClass){
-	int pCheck = 0;  				//Variable for Parameter Check. (0 is Pass; -1 is Fail)
-	char tempBuff[500] = {0};		//Temporary input Buffer
-	PCBitem *newPCB;				//Pointer to New PCB Item
+	//int pCheck = 0;  												//Variable for Parameter Check. (0 is Pass; -1 is Fail)
+	int charCount = 0;												//Number of Characters in Process Name
+	char tempBuff[500] = {0};										//Temporary input Buffer
+	PCBitem *tempPCB;												//Temporary PCB Item
+	PCBitem *newPCB;												//Pointer to New PCB Item
 	
 	
-
-	// Initializes a PCB’s content (name, priority, class)
-	char store_pName[20];
+	char store_pName[20];											// Initializes a PCB’s content (name, priority, class)
 	strncopy(store_pName, new_pName, 20);
 	int store_pPriority = new_pPriority;
 	int store_pClass = new_pClass;
-	// Parameters: name, priority, class
-	// Should check that the parameters are valid
-	// Name is unique
-	// Priority between -128 and +127
-	if((new_pPriority > 127) || (new_pPriority < -128)){
+	
+	
+	tempPCB = find_PCB(new_pName);									// Check that Name is unique (1. Check to see if name already exists)
+	charCount = (sizeOfPointer(new_pName) + 1);						// Check that Name is unique (2. Check to see if at least 8 chars. + Null Terminator)
+	if((tempPCB == NULL) || (charCount < 8)){
+		printf("PCB Name is Invalid. PCB Name already exists.\n");
+		return NULL;
+	}//end if
+	
+	if((new_pPriority > 127) || (new_pPriority < -128)){			// Check that Priority between -128 and +127
 		printf("PCB Priority is Invalid.\n");
 		return NULL;
 		
 		//pCheck = -1;
 		/*while(pCheck == -1){
-		    int newUserPriority = 0;		//The new PCB Priority from User
+			int newUserPriority = 0;		//The new PCB Priority from User
 			
 			printf("PCB Priority is Invalid. Please enter a priority between -128 and +127: ");
 			tempBuff = keyboardInput(0);
@@ -1456,39 +1463,74 @@ PCBitem* setup_PCB(char new_pName[], int new_pPriority, int new_pClass){
 		}//end while
 		store_pPriority = newUserPriority; */
 	}//end if
-
-	// Class is valid
-    // Calls the Allocate_PCB function to allocate the memory for a new PCB
-	newPCB = allocate_PCB();
-	// Sets the name, priority, and class based on the parameters
-	strncpy(newPCB->pName,store_pName,20);
+	
+	if((new_pClass > 7) || (new_pClass < 1)){						// Check that Class is valid
+		printf("PCB Class is Invalid.\n");
+		return NULL;
+	}//end if
+	
+	newPCB = allocate_PCB();										// Calls the Allocate_PCB function to allocate the memory for a new PCB
+	
+	strncpy(newPCB->pName,store_pName,20);							// Sets the name, priority, and class based on the parameters
 	newPCB->pClass = pClass;
 	newPCB->priority = pPriority;
-	// Sets state to ready, not suspended (this will change in later modules)
-	newPCB->state = READY;
-	// Sets remaining fields to defaults
-	temp->stackTop = NULL;
-	temp->stackBase = NULL;
-	temp->memSize = NULL;						//Memory Descriptors
+	
+	newPCB->state = READY;											// Sets state to ready, not suspended (this will change in later modules)
+	
+	temp->memSize = NULL;											// Sets remaining fields to defaults (Memory Descriptors)
 	temp->loadAddress = NULL;
 	temp->exeAddress = NULL;
+	
 	// Does not insert the PCB into a queue
-	// Returns PCB Pointer if successful, NULL if not successful (including if one of the parameters are not valid)
-
-	return newPCB;
+	return *newPCB;													// Returns PCB Pointer if successful, NULL if not successful (including if one of the parameters are not valid)
 }//end setup_PCB
 
+void block(){
+	char tempBuff[20];												//Temporary Input Buffer
+	PCBitem *tempPCB;												//Temporary PCB Item
+	int charCount = 0;												//Number of Characters in Process Name
 
-/*
-void find_PCB(){
 
-}//end find_PCB
 
-void insert_PCB(){
+	// Get PCB name from the user- check that the PCB with that name exists (Make sure that name is valid & exists!)
+	printf("Please enter the name of the PCB to block: ");
+	tempBuff = keyboardInput(0);									//Gets process name from User
+	charCount = (sizeOfPointer(tempBuff) + 1);						//Check that Name is Valid (Check to see if at least 8 chars. + Null Terminator)
+	
+	if((charCount >= 8)){
+		tempPCB = find_PCB(tempBuff);
+		if(tempPCB != NULL){
+			
+			// Places the process (PCB) in the blocked state
+			// Does not change its suspended status
+			if((tempPCB->state == SUSREADY){
+			tempPCB->state = SUSBLOCKED;
+			} else{
+			tempPCB->state = BLOCKED;
+			}//end if
+			
+			// Should remove the process from the ready queue (by calling remove_PCB) and place the process in the blocked queue (by calling insert_PCB)
+			error = remove_PCB(tempPCB);
+			
+			
+			// Display appropriate error or success message
+			error = errorCheck(error);
+			
+			if(error == 0){
+			printf("The PCB Process has been successfully blocked.\n");
+			}//end if
+			
+		} else{
+			printf("Process Name does not exist.\n");
+		}//end if
+	} else{
+		printf("Process Name is Invalid. Process Name must be at least 8 characters in length.\n");
+	}//end if
+}//end block
 
-}//end insert_PCB
 
-void remove_PCB(){
 
-}//end remove_PCB
-*/
+
+
+
+
