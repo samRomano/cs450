@@ -13,11 +13,7 @@ void block(){
 	if((charCount >= 8)){												//Check that Name is Valid (Check to see if at least 8 chars. + Null Terminator)
 		tempPCB = find_PCB(tempPtr);
 		if(tempPCB != NULL){											//Check if Name Exists
-			if(tempPCB->state == SYSTEM){								//Check if Process State is able to be Blocked
-				printf("Error: System Processes cannot be blocked.\n");
-			} else if(tempPCB->state == APP){
-				printf("Error: App Processes cannot be blocked.\n");
-			} else if(tempPCB->state == BLOCKED){
+			if(tempPCB->state == BLOCKED){
 				printf("Error: The process is already Blocked.\n");
 			} else if(tempPCB->state == SUSBLOCKED){
 				printf("Error: The process is already Suspended & Blocked.\n");
@@ -72,11 +68,7 @@ void suspend(){
 	if((charCount >= 8)){											//Check that Name is Valid (Check to see if at least 8 chars. + Null Terminator)
 		tempPCB = find_PCB(tempPtr);
 		if(tempPCB != NULL){										//Check if Name Exists
-			if(tempPCB->state == SYSTEM){							//Check if Process State is able to be Suspended
-				printf("Error: System Processes cannot be Suspended.\n");
-			} else if(tempPCB->state == APP){
-				printf("Error: App Processes cannot be Suspended.\n");
-			} else if(tempPCB->state == RUNNING){
+			if(tempPCB->state == RUNNING){
 				printf("Error: Running Processes cannot be Suspended.\n");
 			} else if(tempPCB->state == SUSREADY){
 				printf("Error: The process is already Suspended & Ready.\n");
