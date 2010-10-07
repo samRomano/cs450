@@ -187,18 +187,34 @@ void copyPtr(char*, char*);
 /* printInterrupt: This is an informal interrupt for pagination*/
 void printInterrupt();
 
-int insert_PCB(int,PCBitem*);
-int delete_PCB(PCBitem*);
-void createPCB(PCBitem*, int);
+
+
 int pointer2Str(char *,char*);
 int pointer2Int(char *);
+
+
+int next_LL(LLitem * curr);
+PCBitem * allocate_pcb();
+int free_pcb(PCBitem *);
+PCBitem * setup_pcb(char [], int , int );
 PCBitem * find_PCB(char []);
 LLitem* find_LL(char []);
-void next_LL(LLitem * curr);
-PCBitem * allocate_PCB();
-PCBitem * setup_PCB(char [], int , int );
-int free_PCB(PCBitem *);	
-void block();
+int insert_pcb(int,PCBitem*);
+int remove_pcb(PCBitem*);
+
+void handler_delete_pcb();
+void handler_create_pcb();
+void handler_block();
+void handler_unblock();
+void handler_suspend();
+void handler_resume();
+void handler_set_priority();
+void handler_show_pcb();
+void handler_show(int);
+
+
+
+
 
 LLitem * tail4 = NULL,  *head4 = NULL,  *curr4 = NULL;
 LLitem * tail5 = NULL,  *head5 = NULL,  *curr5 = NULL;
@@ -221,8 +237,6 @@ char *historyList[historySize];					//Command History - Queue
 int historyQueue_Head = 0;						//Command History - Queue Head
 int historyQueue_Tail = 0;						//Command History - Queue Tail
 int historyCounter = 0;							//Command History Counter
-
-
 
 
 /******** Main ********/
@@ -320,7 +334,74 @@ void commandHandler(){
 		else if(cmpP2S(userCommand, "help_change_prompt")==1){
 			handler_help_function("change_prompt");
 		}
-		
+		else if(cmpP2S(userCommand, "help_create_pcb")==1){
+			handler_help_function("create_pcb");
+		}
+		else if(cmpP2S(userCommand, "create_pcb")==1){
+			handler_create_pcb();
+		}
+		else if(cmpP2S(userCommand, "help_delete_pcb")==1){
+			handler_help_function("delete_pcb");
+		}
+		else if(cmpP2S(userCommand, "delete_pcb")==1){
+			handler_delete_pcb();
+		}
+		else if(cmpP2S(userCommand, "help_block")==1){
+			handler_help_function("block");
+		}
+		else if(cmpP2S(userCommand, "block")==1){
+			handler_block();
+		}
+		else if(cmpP2S(userCommand, "help_unblock")==1){
+			handler_help_function("unblock");
+		}
+		else if(cmpP2S(userCommand, "unblock")==1){
+			handler_unblock();
+		}
+		else if(cmpP2S(userCommand, "help_suspend")==1){
+			handler_help_function("suspend");
+		}
+		else if(cmpP2S(userCommand, "suspend")==1){
+			handler_suspend();
+		}
+		else if(cmpP2S(userCommand, "help_resume")==1){
+			handler_help_function("resume");
+		}
+		else if(cmpP2S(userCommand, "resume")==1){
+			handler_resume();
+		}
+		else if(cmpP2S(userCommand, "help_set_priority")==1){
+			handler_help_function("set_priority");
+		}
+		else if(cmpP2S(userCommand, "set_priority")==1){
+			handler_set_priority();
+		}
+		else if(cmpP2S(userCommand, "help_show_pcb")==1){
+			handler_help_function("show_pcb");
+		}
+		else if(cmpP2S(userCommand, "show_pcb")==1){
+			handler_show_pcb();
+		}
+		else if(cmpP2S(userCommand, "help_show_all")==1){
+			handler_help_function("show_all");
+		}
+		else if(cmpP2S(userCommand, "show_all")==1){
+			handler_show(0);
+		}
+		else if(cmpP2S(userCommand, "help_show_ready")==1){
+			handler_help_function("show_ready");
+		}
+		else if(cmpP2S(userCommand, "show_ready")==1){
+			handler_show(4);
+			handler_show(6);
+		}
+		else if(cmpP2S(userCommand, "help_show_blocked")==1){
+			handler_help_function("show_blocked");
+		}
+		else if(cmpP2S(userCommand, "show_blocked")==1){
+			handler_show(5);
+			handler_show(7);
+		}
 		else {
 			printf("Invalid Command.\n");
 		}//end if - Decision
@@ -1182,7 +1263,6 @@ void copyPtr(char *userInp, char *userCom){
 
 //Set Date
 
-
 void printInterrupt(){
 	char * Good = NULL;
 	printConstant ++;
@@ -1192,166 +1272,6 @@ void printInterrupt(){
 		printConstant = 0;
 	}
 }
-
-
-/*void main() {
-	int i;
-	handler_get_date();
-	printf("\nStart\n");
-	//init(111);
-	for(i=1;i<=10;i++) {
-		insertLL(i);
-	}
-	curr4 = (head4->next)->next;
-	for(i=1;i<=9;i++){
-		deleteLL();
-	}
-	printf("\n");
-	for(i=1;i<=9;i++) {
-		insertLL(i);
-	}
-
-	curr4 = head4;
-
-	for(i=1;i<=11;i++){
-		deleteLL();
-	}
-	
-}
-*/
-/*void insertLL(int dope){
-	LLitem * temp;
-	PCBitem *PCBtemp= (PCBitem *)malloc(sizeof(PCBitem));
-	createPCB(PCBtemp,dope);
-	if(head4 == NULL){
-		tail4 = (LLitem *)malloc(sizeof(LLitem));	
-		tail4->val = NULL;
-		tail4->val = PCBtemp;
-		tail4->next  = NULL;
-		tail4->prev = NULL;
-		head4 = tail4;
-	}
-	else{
-		temp = tail4;
-		tail4 = (LLitem *)malloc(sizeof(LLitem));
-		tail4->val = NULL;
-		tail4->val = PCBtemp;
-		tail4->next  = head4;
-		tail4->prev  = temp;
-		temp->next = tail4;
-		head4->prev = tail4;
-	}
-	//free(PCBtemp);
-}
-int deleteLL(){
-	//curr4 = head4;
-	LLitem *tempP,*tempN;
-	if(tail4 == head4 && head4 != NULL){
-		printf("sup%d\n",curr4->val->pClass);
-		printf("sup2%s\n",curr4->val->pName);
-		free(curr4);
-		head4 = NULL;
-		tail4 = NULL;
-	}
-	else if(head4 == NULL){
-		printf("Error no items\n");
-		return -1;
-	}
-	else{
-		tempP = curr4->prev;
-		tempN = curr4->next;
-		printf("class %d\n",curr4->val->pClass);
-		printf("name %s\n",curr4->val->pName);
-		if(curr4 == head4){
-			head4 = tempN ;
-			head4->prev = tail4;
-			tail4->next = head4;
-		}
-		else if(curr4 == tail4){
-			tail4 = tempP;
-			head4->prev = tail4;
-			tail4->next = head4;
-		}
-		else{
-			tempP->next = tempN;
-			tempN->prev = tempP;
-		}		
-		free(curr4->val);
-		free(curr4);
-		curr4 = tempN;
-	}
-	return 0;
-}
-*/
-void handler_createPCB(){
-	PCBitem * temp;
-	char * Buffer = NULL;
-	char inputName[bufSizeDefined] = {0};
-	int inputClass = 0;
-	int inputPriority = 0;
-	printf("Enter the PCB name(max 20 characters): \n");
-	Buffer = keyboardInput(0);
-	pointer2Str(Buffer,inputName);
-	printf("Enter the PCB class value(1 through 7): \n");
-	Buffer = keyboardInput(0);
-	inputClass =pointer2Int(Buffer);
-	printf("Enter the PCB priority: \n");
-	Buffer = keyboardInput(0);
-	inputPriority =pointer2Int(Buffer);
-	
-	
-	if((find_PCB(inputName) != NULL) || (sizeOfPointer(inputName) < 8)){
-		printf("PCB Name is Invalid. PCB Name already exists.\n");
-		return NULL;
-	}//end if
-	
-	if((inputPriority > 127) || (inputPriority < -128)){			// Check that Priority between -128 and +127
-		printf("PCB Priority is Invalid.\n");
-		return NULL;
-	}//end if
-	
-	if((inputClass > 7) || (inputClass < 1)){						// Check that Class is valid
-		printf("PCB Class is Invalid.\n");
-		return NULL;
-	}//end if
-	
-	
-	temp = setup_PCB(inputStr,inputPriority,inputClass);
-	error = insert_PCB(READY, temp);
-	
-}
-void handler_deletePCB(){
-	PCBitem * temp = NULL;
-	char * Buffer = NULL;
-	char inputName[bufSizeDefined] = {0};
-	int inputClass = 0;
-	int inputPriority = 0;
-	printf("Enter the PCB name(max 20 characters): \n");
-	Buffer = keyboardInput(0);
-	pointer2Str(Buffer,inputName);
-	
-	temp = find_PCB(inputName)					
-	if(( temp != NULL)){
-		printf("PCB Name is Invalid. PCB Name already exists.\n");
-		return NULL;
-	}//end if
-	error = remove_PCB(temp);
-	if(error == 0){
-		error = free_PCB(temp);
-		if(error == 0){
-			printf("\n Successfully Deleted: %s",inputName);
-		}
-		else{
-			printf("\n Failed to Delete: %s",inputName);
-		}
-	}
-	else{
-		printf("\n Failed to Delete: %s",inputName);
-		//ERRORRRRR
-	}
-}
-
-
 
 int pointer2Str(char * Buffer,char * inputStr){
 	int BufferSize;
@@ -1406,31 +1326,18 @@ int pointer2Int(char * Buffer){
 	}	
 }
 
-/*
 
-int handler_create_PCB(char name[], int class, int priority){
-	
-	setup_PCB(name, class, priority);
-	insert_PCB(Queue q, PCB* pcb);
-	
+
+
+int next_ll(LLitem * curr){
+	if(curr->next != NULL){
+		curr = curr->next;
+		return 0;
+	}
+	return -1;
 }
 
-int handler_delete_PCB(char name[]){
-	
-	remove_PCB(name);
-}
-
-int handler_block(char name[]);
-
-	if(find_PCB(name == NULL)){
-		printf("This process does not exist!");
-	}else{
-		pcb.state = BLOCKED;
-	*/	
-
-/************ PCB Function List **********************/
-
-PCBitem * allocate_PCB(){
+PCBitem * allocate_pcb(){
 	PCBitem * newPCB = NULL;											 //Creates New PCB Item & Initializes to NULL for Error Checking
 	newPCB =(PCBitem *) sys_alloc_mem(sizeof(PCBitem));   			 //Allocates Memory for New PCB Item
 	//PCBitem *ptrPCB;										         //Creates New PCB Pointer
@@ -1442,32 +1349,28 @@ PCBitem * allocate_PCB(){
 	return newPCB;													 //Returns PCB for PCB Pointer
 }//end allocate_PCB
 
-int free_PCB(PCBitem *newPCB){
+int free_pcb(PCBitem *newPCB){
 	error = sys_free_mem(newPCB->stackBase);					 //Need to free Stack (a.k.a. Memory associated with base pointer)
-	error = errorCheck(errorReturn);
+	error = errorCheck(error);
 
 	error = sys_free_mem(newPCB);							 	 //Frees Memory Allocated to PCB
-	error = errorCheck(errorReturn);
+	error = errorCheck(error);
 	
 	
 
 	return error;												 //Returns any error code found
 }//end free_PCBULL
 
-PCBitem *setup_PCB(char new_pName[], int new_pPriority, int new_pClass){
-	//int pCheck = 0;  												//Variable for Parameter Check. (0 is Pass; -1 is Fail)
+PCBitem *setup_pcb(char new_pName[], int new_pPriority, int new_pClass){
 	int charCount = 0;												//Number of Characters in Process Name
-	//char *tempPtr = NULL;											//Temporary Input Character Pointer
-	//char tempBuff[500] = {0};										//Temporary Input Buffer
 	PCBitem *tempPCB;												//Temporary PCB Item
 	PCBitem *newPCB;												//Pointer to New PCB Item
 	char store_pName[20];											// Initializes a PCB’s content (name, priority, class)
-	//int store_pPriority = new_pPriority;
-	//int store_pClass = new_pClass;
+	
 	
 	strncpy(store_pName, new_pName, 20);
 	
-	tempPCB = find_PCB(new_pName);									// Check that Name is unique (1. Check to see if name already exists)
+	tempPCB = find_pcb(new_pName);									// Check that Name is unique (1. Check to see if name already exists)
 	charCount = (sizeOfPointer(new_pName));						// Check that Name is unique (2. Check to see if at least 8 chars. + Null Terminator)
 	if((tempPCB != NULL) || (charCount < 8)){
 		printf("PCB Name is Invalid. PCB Name already exists.\n");
@@ -1478,20 +1381,7 @@ PCBitem *setup_PCB(char new_pName[], int new_pPriority, int new_pClass){
 		printf("PCB Priority is Invalid.\n");
 		return NULL;
 		
-		//pCheck = -1;
-		/*while(pCheck == -1){
-			int newUserPriority = 0;		//The new PCB Priority from User
-			
-			printf("PCB Priority is Invalid. Please enter a priority between -128 and +127: ");
-			tempPtr = keyboardInput(0);
-
-			newUserPriority = pointer2Int(tempPtr);
-
-			if((newUserPriority >= -128) && (newUserPriority =< 127)){
-				pCheck = 0;
-			}//end if
-		}//end while
-		store_pPriority = newUserPriority; */
+		
 	}//end if
 	
 	if((new_pClass > 7) || (new_pClass < 1)){						// Check that Class is valid
@@ -1499,7 +1389,7 @@ PCBitem *setup_PCB(char new_pName[], int new_pPriority, int new_pClass){
 		return NULL;
 	}//end if
 	
-	newPCB = allocate_PCB();										// Calls the Allocate_PCB function to allocate the memory for a new PCB
+	newPCB = allocate_pcb();										// Calls the Allocate_PCB function to allocate the memory for a new PCB
 	
 	strncpy(newPCB->pName,store_pName,20);							// Sets the name, priority, and class based on the parameters
 	newPCB->pClass = new_pClass;
@@ -1515,7 +1405,93 @@ PCBitem *setup_PCB(char new_pName[], int new_pPriority, int new_pClass){
 	return newPCB;													// Returns PCB Pointer if successful, NULL if not successful (including if one of the parameters are not valid)
 }//end setup_PCB
 
-int insert_PCB(int queueInt,PCBitem * PCBtemp){
+PCBitem* find_pcb(char name []){
+
+	curr4 = head4;
+	do{ 
+		if(curr4->val->pName == name){
+			return curr4->val;
+		}
+		
+		next_ll(curr4);
+	}while(curr4 != tail4);
+
+	curr5 = head5;
+	do{ 
+		if(curr5->val->pName == name){
+			return curr5->val;
+		}
+		
+		next_ll(curr5);	
+	}while(curr5 != tail5);
+	
+	curr6 = head6;
+	do{ 
+		if(curr6->val->pName == name){
+			return curr6->val;
+		}
+		
+		next_ll(curr6);	
+	}while(curr6 != tail6);
+	
+	curr7 = head7;
+	do{ 
+		if(curr7->val->pName == name){
+			return curr7->val;
+		}
+		
+		next_ll(curr7);	
+	}while(curr7 != tail7);
+	
+	return NULL;
+	
+	
+}//end find_PCB
+
+LLitem* find_ll(char name []){
+
+	curr4 = head4;
+	do{ 
+		if(curr4->val->pName == name){
+			return curr4;
+		}
+		
+		next_ll(curr4);
+	}while(curr4 != tail4);
+
+	curr5 = head5;
+	do{ 
+		if(curr5->val->pName == name){
+			return curr5;
+		}
+		
+		next_ll(curr5);	
+	}while(curr5 != tail5);
+	
+	curr6 = head6;
+	do{ 
+		if(curr6->val->pName == name){
+			return curr6;
+		}
+		
+		next_ll(curr6);	
+	}while(curr6 != tail6);
+	
+	curr7 = head7;
+	do{ 
+		if(curr7->val->pName == name){
+			return curr7;
+		}
+		
+		next_ll(curr7);	
+	}while(curr7 != tail7);
+	
+	return NULL;
+	
+	
+}//end find_LL
+
+int insert_pcb(int queueInt,PCBitem * PCBtemp){
 	LLitem * tempHead, *tempTail, *tempCurr,*temp;
 	//createPCB(PCBtemp,dope);
 	if(queueInt == READY){
@@ -1617,7 +1593,7 @@ int insert_PCB(int queueInt,PCBitem * PCBtemp){
 	}
 	return 0;
 }
-int remove_PCB(PCBitem * PCBtemp){
+int remove_pcb(PCBitem * PCBtemp){
 	LLitem * tempHead, *tempTail, *tempCurr;
 	LLitem *tempP,*tempN;
 	if(PCBtemp->state == READY){
@@ -1639,7 +1615,7 @@ int remove_PCB(PCBitem * PCBtemp){
 	}
 	tempCurr = find_LL(PCBtemp->pName);
 	if(tempTail == tempHead && tempHead != NULL){
-		free(tempCurr);
+		sys_free_mem(tempCurr);
 		tempHead = NULL;
 		tempTail = NULL;
 	}
@@ -1664,8 +1640,8 @@ int remove_PCB(PCBitem * PCBtemp){
 			tempP->next = tempN;
 			tempN->prev = tempP;
 		}		
-		free(tempCurr->val);
-		free(tempCurr);
+		
+		sys_free_mem(tempCurr);
 		tempCurr = tempN;
 	}
 	if(PCBtemp->state == READY){
@@ -1691,107 +1667,308 @@ int remove_PCB(PCBitem * PCBtemp){
 	}
 	return 0;
 }
-void next_LL(LLitem * curr){
-	if(curr->next != NULL){
-		curr = curr->next;
+
+void handler_create_pcb(){
+	PCBitem * temp;
+	char * Buffer = NULL;
+	char inputName[bufSizeDefined] = {0};
+	int inputClass = 0;
+	int inputPriority = 0;
+	printf("Enter the PCB name(max 20 characters): \n");
+	Buffer = keyboardInput(0);
+	pointer2Str(Buffer,inputName);
+	printf("Enter the PCB class value(1 through 7): \n");
+	Buffer = keyboardInput(0);
+	inputClass =pointer2Int(Buffer);
+	printf("Enter the PCB priority: \n");
+	Buffer = keyboardInput(0);
+	inputPriority =pointer2Int(Buffer);
+	
+	
+	if((find_PCB(inputName) != NULL) || (sizeOfPointer(inputName) < 8)){
+		printf("PCB Name is Invalid. PCB Name already exists.\n");
+	}//end if
+	
+	if((inputPriority > 127) || (inputPriority < -128)){			// Check that Priority between -128 and +127
+		printf("PCB Priority is Invalid.\n");
+	}//end if
+	
+	if((inputClass > 7) || (inputClass < 1)){						// Check that Class is valid
+		printf("PCB Class is Invalid.\n");
+	}//end if
+	
+	
+	temp = setup_pcb(inputName,inputPriority,inputClass);
+	error = insert_pcb(READY, temp);
+	
+}
+void handler_delete_pcb(){
+	PCBitem * temp = NULL;
+	char * Buffer = NULL;
+	char inputName[bufSizeDefined] = {0};
+	printf("Enter the PCB name(max 20 characters): \n");
+	Buffer = keyboardInput(0);
+	pointer2Str(Buffer,inputName);
+	
+	temp = find_pcb(inputName);					
+	if(( temp != NULL)){
+		printf("PCB Name is Invalid. PCB Name already exists.\n");
+	}//end if
+	error = remove_PCB(temp);
+	if(error == 0){
+		error = free_PCB(temp);
+		if(error == 0){
+			printf("\n Successfully Deleted: %s",inputName);
+		}
+		else{
+			printf("\n Failed to Delete: %s",inputName);
+		}
+	}
+	else{
+		printf("\n Failed to Delete: %s",inputName);
+		//ERRORRRRR
 	}
 }
 
+void handler_block(){
+	char tempBuff[bufSizeDefined] = {0};												//Temporary Input Buffer
+	char *tempPtr = NULL;												//Temporary Input Character Pointer for PCB Name
+	PCBitem *tempPCB;													//Temporary PCB Item
+	int charCount = 0;													//Number of Characters in Process Name
 
-LLitem* find_LL(char name []){
+	// Get PCB name from the user- check that the PCB with that name exists (Make sure that name is valid & exists!)
+	printf("Please enter the name of the PCB to block: ");
+	tempPtr = keyboardInput(0);											//Gets process name from User
+	pointer2Str(tempPtr,tempBuff);										//Convert Character Pointer to Character String
+	charCount = sizeOfPointer(tempBuff);									//Get Name Size
+	
+	if((charCount >= 8)){												//Check that Name is Valid (Check to see if at least 8 chars. + Null Terminator)
+		tempPCB = find_PCB(tempBuff);
+		if(tempPCB != NULL){											//Check if Name Exists
+			if(tempPCB->state == BLOCKED){
+				printf("Error: The process is already Blocked.\n");
+			} else if(tempPCB->state == SUSBLOCKED){
+				printf("Error: The process is already Suspended & Blocked.\n");
+			} else{
+				
+				// Should remove the process from the ready queue (by calling remove_PCB)
+				error = remove_PCB(tempPCB->state, tempPCB);
+				error = errorCheck(error);
+				
+				// Places the process (PCB) in the blocked state
+				// Does not change its suspended status
+				
+				if(tempPCB->state == RUNNING){
+					tempPCB->state = BLOCKED;
+				} else if(tempPCB->state == READY){
+					tempPCB->state = BLOCKED;
+				} else if(tempPCB->state == SUSREADY){
+					tempPCB->state = SUSBLOCKED;
+				}//end if
+				
+				// And place the process in the blocked queue (by calling insert_PCB)
+				error = insert_PCB(tempPCB->state, tempPCB);
+				error = errorCheck(error);
+				
+				// Display appropriate error or success message
+				if(error == 0){
+					printf("The PCB Process has been successfully blocked.\n");
+				}//end if
+				
+			}//end if
+		} else{
+			printf("Process Name does not exist.\n");
+		}//end if
+	} else{
+		printf("Process Name is Invalid. Process Name must be at least 8 characters in length.\n");
+	}//end if
+}//end block
 
-	curr4 = head4;
-	do{ 
-		if(curr4->val->pName == name){
-			return curr4;
+void handler_unblock_(){
+	char tempBuff[bufSizeDefined] = {0};												//Temporary Input Buffer
+	char *tempPtr = NULL;												//Temporary Input Character Pointer for PCB Name
+	PCBitem *tempPCB;													//Temporary PCB Item
+	int charCount = 0;													//Number of Characters in Process Name
+
+	// Get PCB name from the user- check that the PCB with that name exists (Make sure that name is valid & exists!)
+	printf("Please enter the name of the PCB to block: ");
+	tempPtr = keyboardInput(0);											//Gets process name from User
+	pointer2Str(tempPtr,tempBuff);										//Convert Character Pointer to Character String
+	charCount = sizeOfPointer(tempBuff);									//Get Name Size
+	
+	if((charCount >= 8)){												//Check that Name is Valid (Check to see if at least 8 chars. + Null Terminator)
+		tempPCB = find_PCB(tempBuff);
+	if(tempPCB != NULL){											//Check if Name Exists
+		if(tempPCB->state == READY){
+			printf("Error: The process is ready and already unblocked.\n");
+		}else if(tempPCB->state == SUSREADY){
+			printf("Error: The process is suspended and already unblocked.\n");
+		}else if(tempPCB->state == RUNNING){
+			printf("Error: The process is running and already unblocked.\n");
+		}else{
+		
+			error = removePCB(tempPCB);
+			error = errorCheck(error);
+		
+			if(tempPCB->state == BLOCKED){
+				tempPCB->state = READY;
+			}else if(tempPCB->state == SUSBLOCKED){
+				tempPCB->state = SUSREADY;
+			}
+			
+			error = insert_PCB(tempPCB->state, tempPCB);
+			error = errorCheck(error);
+			
+			// Display appropriate error or success message
+			if(error == 0){
+				printf("The PCB Process has been successfully unblocked.\n");
+			}//end if
+			
 		}
 		
-		next_LL(curr4);
-	}while(curr4 != tail4);
+		
+		}else{
+			printf("Process Name is Invalid. Process Name must be at least 8 characters in length.\n");
+	}
+}//end unblock	
+		}
 
-	curr5 = head5;
-	do{ 
-		if(curr5->val->pName == name){
-			return curr5;
-		}
-		
-		next_LL(curr5);	
-	}while(curr5 != tail5);
+void handler_suspend(){
+	char tempBuff[bufSizeDefined] = {0};												//Temporary Input Buffer
+	char *tempPtr = NULL;												//Temporary Input Character Pointer for PCB Name
+	PCBitem *tempPCB;													//Temporary PCB Item
+	int charCount = 0;													//Number of Characters in Process Name
+
+	// Get PCB name from the user- check that the PCB with that name exists (Make sure that name is valid & exists!)
+	printf("Please enter the name of the PCB to block: ");
+	tempPtr = keyboardInput(0);											//Gets process name from User
+	pointer2Str(tempPtr,tempBuff);										//Convert Character Pointer to Character String
+	charCount = sizeOfPointer(tempBuff);									//Get Name Size
 	
-	curr6 = head6;
-	do{ 
-		if(curr6->val->pName == name){
-			return curr6;
-		}
-		
-		next_LL(curr6);	
-	}while(curr6 != tail6);
+	if((charCount >= 8)){												//Check that Name is Valid (Check to see if at least 8 chars. + Null Terminator)
+		tempPCB = find_PCB(tempBuff);
+		if(tempPCB != NULL){										//Check if Name Exists
+			if(tempPCB->state == RUNNING){
+				printf("Error: Running Processes cannot be Suspended.\n");
+			} else if(tempPCB->state == SUSREADY){
+				printf("Error: The process is already Suspended & Ready.\n");
+			} else if(tempPCB->state == SUSBLOCKED){
+				printf("Error: The process is already Suspended & Blocked.\n");
+			} else{
+				
+				// Should remove the process from the ready queue (by calling remove_PCB)
+				error = remove_PCB(tempPCB->state, tempPCB);
+				error = errorCheck(error);
+				
+				// Puts the PCB in the suspended state
+				if(tempPCB->state == READY){
+					tempPCB->state = SUSREADY;
+				} else if(tempPCB->state == BLOCKED){
+					tempPCB->state = SUSBLOCKED;
+				}//end if
+				
+				// Might require changing queues (from ready to suspended ready, for example) if 4 queues are used
+				error = insert_PCB(tempPCB->state, tempPCB);
+				error = errorCheck(error);
+				
+				// Display appropriate error or success message
+				if(error == 0){
+					printf("The PCB Process has been successfully blocked.\n");
+				}//end if
+			}//end if
+		} else{
+			printf("Process Name does not exist.\n");
+		}//end if
+	} else{
+		printf("Process Name is Invalid. Process Name must be at least 8 characters in length.\n");
+	}//end if
+}//end suspend
+
+void handler_set_priority(){
+	char tempBuff[bufSizeDefined] = {0};	
+	char *tempPtr = NULL;											//Temporary Input Character Pointer for PCB Name										//Temporary Input Character Pointer for New Priority
+	PCBitem *tempPCB;												//Temporary PCB Item
+	int charCount = 0;												//Number of Characters in Process Name
+	int newPriority = 0;											//New Priority value
 	
-	curr7 = head7;
-	do{ 
-		if(curr7->val->pName == name){
-			return curr7;
-		}
-		
-		next_LL(curr7);	
-	}while(curr7 != tail7);
+	//Get PCB name
+	printf("Please enter the name of the PCB to Set the Priority: ");
+	tempPtr = keyboardInput(0);										//Gets process name from User
+	pointer2Str(tempPtr,tempBuff);									//Convert Character Pointer to Character String
+	charCount = sizeOfPointer(tempBuff);									//Get Name Size
 	
-	return NULL;
-	
-	
-}//end find_LL
+	if((charCount >= 8)){												//Check that Name is Valid (Check to see if at least 8 chars. + Null Terminator)
+		tempPCB = find_PCB(tempBuff);
+		if(tempPCB != NULL){										//Check that the PCB Exists
+			
+			//Get New Priority from User
+			printf("Please enter a number between -128 & +127 to set the new Priority: ");
+			tempPtr = keyboardInput(0);									//Gets process name from User
+			newPriority = pointer2Int(tempPtr);							//Convert Character Pointer to Int
+			
+			
+			if((newPriority >= -128) || (newPriority <= 127)){		//Check that the new priority is valid (-128 to 127)
+				tempPCB->priority = newPriority;						//Set new PCB Priority
+				
+				//If the PCB is in the ready state, you will need to change the position of the PCB in the queue based upon its new priority
+				if(tempPCB->state == READY){
+					error = remove_PCB(tempPCB->state, tempPCB);						//Remove PCB from Ready Queue
+					error = errorCheck(error);							//Perform Error Check
+					error = insert_PCB(tempPCB->state, tempPCB);						//Insert PCB into Ready Queue (so as to adjust for new Priority)
+					error = errorCheck(error);							//Perform Error Check
+				}//end if
+			}//end if
+			
+			//Display appropriate error or success message.
+			if(error == 0){
+				printf("The PCB Process has been successfully blocked.\n");
+			}//end if
+			
+		} else{
+			printf("Process Name does not exist.\n");
+		}//end if
+	} else{
+		printf("Process Name is Invalid. Process Name must be at least 8 characters in length.\n");
+	}//end if
+}//end setPriority
 
 
+void handler_show_pcb(){
+	char tempBuff[bufSizeDefined] = {0};	
+	char *tempPtr = NULL;											//Temporary Input Character Pointer for PCB Name											//Temporary Input Character Pointer for New Priority
+	PCBitem *tempPCB;												//Temporary PCB Item
+	int charCount = 0;												//Number of Characters in Process Name
+											//New Priority value
+	
+	//Get PCB name
+	printf("Please enter the name of the PCB to Set the Priority: ");
+	tempPtr = keyboardInput(0);										//Gets process name from User
+	pointer2Str(tempPtr,tempBuff);									//Convert Character Pointer to Character String
+	charCount = sizeOfPointer(tempBuff);									//Get Name Size
+	
+	if((charCount >= 8)){												//Check that Name is Valid (Check to see if at least 8 chars. + Null Terminator)
+		tempPCB = find_PCB(tempBuff);
+		if(tempPCB != NULL){										//Check that the PCB Exists
+			//Display all information about the PCB (except pointers) in “attractive” format
+			printf("\nProcess Name:\t%s\n", tempPCB->pName);
+			printf("Process Class:\t%d\n", tempPCB->pClass);
+			printf("Process Priority:\t%d\n", tempPCB->priority);
+			printf("Process State:\t%d\n", tempPCB->state);
+			printf("Process Memory Size:\t%d\n", tempPCB->memSize);
+		} else{														
+			printf("Process Name does not exist.\n");				//Display error if PCB doesn’t exist
+		}//end if
+	} else{
+		printf("Process Name is Invalid. Process Name must be at least 8 characters in length.\n");
+	}//end if
+}//end showPCB
 
-PCBitem* find_PCB(char name []){
-
-	curr4 = head4;
-	do{ 
-		if(curr4->val->pName == name){
-			return curr4->val;
-		}
-		
-		next_LL(curr4);
-	}while(curr4 != tail4);
-
-	curr5 = head5;
-	do{ 
-		if(curr5->val->pName == name){
-			return curr5->val;
-		}
-		
-		next_LL(curr5);	
-	}while(curr5 != tail5);
-	
-	curr6 = head6;
-	do{ 
-		if(curr6->val->pName == name){
-			return curr6->val;
-		}
-		
-		next_LL(curr6);	
-	}while(curr6 != tail6);
-	
-	curr7 = head7;
-	do{ 
-		if(curr7->val->pName == name){
-			return curr7->val;
-		}
-		
-		next_LL(curr7);	
-	}while(curr7 != tail7);
-	
-	return NULL;
-	
-	
-}//end find_PCB
 void handler_show(int queueInt){
-	
 	LLitem * tempCurr;
 	if(queueInt == 0 || queueInt == 4){
 		tempCurr = head4;
 		do{
-			printf("\nName:%s\tState:%d\tPriority:%d",tempCurr->pName,tempCurr->state,tempCurr->priority);
+			printf("\nName:%s\tState:%d\tPriority:%d",tempCurr->val->pName,tempCurr->val->state,tempCurr->val->priority);
 			printInterrupt();	
 			tempCurr = tempCurr->next;	
 		}while(tempCurr != tail4);
@@ -1799,7 +1976,7 @@ void handler_show(int queueInt){
 	else if(queueInt == 0 || queueInt == 5){
 		tempCurr = head5;
 		do{
-			printf("\nName:%s\tState:%d\tPriority:%d",tempCurr->pName,tempCurr->state,tempCurr->priority);
+			printf("\nName:%s\tState:%d\tPriority:%d",tempCurr->val->pName,tempCurr->val->state,tempCurr->val->priority);
 			printInterrupt();	
 			tempCurr = tempCurr->next;	
 		}while(tempCurr != tail5);
@@ -1807,7 +1984,7 @@ void handler_show(int queueInt){
 	else if(queueInt == 0 || queueInt == 6){
 		tempCurr = head6;
 		do{
-			printf("\nName:%s\tState:%d\tPriority:%d",tempCurr->pName,tempCurr->state,tempCurr->priority);
+			printf("\nName:%s\tState:%d\tPriority:%d",tempCurr->val->pName,tempCurr->val->state,tempCurr->val->priority);
 			printInterrupt();	
 			tempCurr = tempCurr->next;	
 		}while(tempCurr != tail6);
@@ -1815,13 +1992,12 @@ void handler_show(int queueInt){
 	else if(queueInt == 0 || queueInt == 7){
 		tempCurr = head7;
 		do{
-			printf("\nName:%s\tState:%d\tPriority:%d",tempCurr->pName,tempCurr->state,tempCurr->priority);
+			printf("\nName:%s\tState:%d\tPriority:%d",tempCurr->val->pName,tempCurr->val->state,tempCurr->val->priority);
 			printInterrupt();	
 			tempCurr = tempCurr->next;	
 		}while(tempCurr != tail7);
 	}
 	else{
-		printf("ERROR");
+		printf("ERROR in show");
 	}
 }
-
