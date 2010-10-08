@@ -310,7 +310,7 @@ LLitem * tail7 = NULL,  *head7 = NULL,  *curr7 = NULL;
 	Errors: None
 **/
 void main(){
-	sys_init(MODULE_R2 + MODULE_R1);			    		//1. Initialize
+	sys_init(MODULE_R2);			    		//1. Initialize
 	commandHandler();				    		//2. Call commandHandler function
 }//end main
 
@@ -489,7 +489,7 @@ void commandHandler(){
 	Errors: None
 **/
 void displayWelcome(){
-	printf("Welcome to the Functional Fresco mpx OS.\n");
+	printf("\n\nWelcome to the Functional Fresco mpx OS.\n");
 }//end displayWelcome
 
 /**
@@ -681,6 +681,24 @@ int errorCheck(int error){
 			printf("Error(-123): Invalid Handler Address.\n");
 		} else if(error == -124){
 			printf("Error(-124): Invalid help_ command.\n");
+		} 
+		 else if(error == -125){
+			printf("Error(-125): Invalid input length.\n");
+		} 
+		else if(error == -126){
+			printf("Error(-126): PCB Name already exists.\n");
+		} 
+		else if(error == -127){
+			printf("Error(-127): Invalid PCB Priority\n");
+		} 
+		else if(error == -128){
+			printf("Error(-128): Invalid PCB Class\n");
+		} 	
+		else if(error == -129){
+			printf("Error(-129): Next Linked List Node is NULL.\n");
+		} 
+		else if(error == -130){
+			printf("Error(-130): Insert with Invalid State.\n");
 		} 
 		
 		return -1;				//Common Error Value
@@ -1454,7 +1472,7 @@ void copyPtr(char *userInp, char *userCom){
 
 	Calls: sys_req
 
-	Globals: bufSize
+	Globals: bufSize,printConstant
 
 	Errors: None
 **/
@@ -1492,7 +1510,7 @@ int pointer2Str(char * Buffer,char * inputStr){
 	BufferSize = sizeOfPointer(Buffer);
 	//printf("\n\n%d",WordSize);
 	if(BufferSize ==0){
-		printf("ERROR");
+		errorCheck(-125);
 		return -1;
 	}
 	else{
@@ -1533,8 +1551,8 @@ int pointer2Int(char * Buffer){
 	
 	
 	if(BufferSize ==0){
-		printf("ERROR");
-		return -1;
+		errorCheck(-125);
+		return -9999;
 	}
 	else{
 		while(i<BufferSize && Buffer[i] != 10){
@@ -1565,14 +1583,14 @@ int pointer2Int(char * Buffer){
 
 	Globals: None
 
-	Errors: Invalid Linked List Structure
+	Errors: -129
 **/
 int next_ll(LLitem * curr){
 	if(curr->next != NULL){
 		curr = curr->next;
 		return 0;
 	}
-	return -1;
+	return -129;
 }
 
 /**
@@ -1642,7 +1660,7 @@ int free_pcb(PCBitem *newPCB){
 
 	Globals: READY
 
-	Errors: Invalid PCB Name, Invalid PCB Priority Value, Invalid PCB Class
+	Errors: Invalid PCB Name, Invalid PCB Priority Value, Invalid PCB Class, -126 through -128
 **/
 PCBitem *setup_pcb(char new_pName[], int new_pPriority, int new_pClass){
 	int charCount = 0;												//Number of Characters in Process Name
@@ -1656,19 +1674,19 @@ PCBitem *setup_pcb(char new_pName[], int new_pPriority, int new_pClass){
 	tempPCB = find_pcb(new_pName);									// Check that Name is unique (1. Check to see if name already exists)
 	charCount = (sizeOfArray(new_pName));						// Check that Name is unique (2. Check to see if at least 8 chars. + Null Terminator)
 	if((tempPCB != NULL) || (charCount < 8)){
-		printf("PCB Name is Invalid. PCB Name already exists.\n");
+		errorCheck(-126);
 		return NULL;
 	}//end if
 	
 	else if((new_pPriority > 127) || (new_pPriority < -128)){			// Check that Priority between -128 and +127
-		printf("PCB Priority is Invalid.\n");
+		errorCheck(-127);
 		return NULL;
 		
 		
 	}//end if
 	
-	else if((new_pClass > 7) || (new_pClass < 1)){						// Check that Class is valid
-		printf("PCB Class is Invalid.\n");
+	else if((new_pClass > 2) || (new_pClass < 1)){						// Check that Class is valid
+		errorCheck(-128);
 		return NULL;
 	}//end if
 	else{
@@ -1716,7 +1734,7 @@ PCBitem* find_pcb(char name []){
 		}
 		
 		error = next_ll(curr4);
-	}while(curr4 != head4 && error != -1);
+	}while(curr4 != head4 && error == 0);
 
 	curr5 = head5;
 	do{ 
@@ -1725,7 +1743,7 @@ PCBitem* find_pcb(char name []){
 		}
 		
 		error = next_ll(curr5);	
-	}while(curr5 != head5 && error != -1);
+	}while(curr5 != head5 && error == 0);
 	
 	curr6 = head6;
 	do{ 
@@ -1734,7 +1752,7 @@ PCBitem* find_pcb(char name []){
 		}
 		
 		error = next_ll(curr6);	
-	}while(curr6 != head6 && error != -1);
+	}while(curr6 != head6 && error == 0);
 	
 	curr7 = head7;
 	do{ 
@@ -1743,7 +1761,7 @@ PCBitem* find_pcb(char name []){
 		}
 		
 		error = next_ll(curr7);	
-	}while(curr7 != head7 && error != -1);
+	}while(curr7 != head7 && error == 0);
 	
 	return NULL;
 	
@@ -1766,47 +1784,50 @@ PCBitem* find_pcb(char name []){
 	Errors: Invalid PCB Name
 **/
 LLitem* find_ll(char name []){
-
+	
 	curr4 = head4;
+	
 	do{ 
-		if(curr4->val->pName == name){
+		
+		if(strcmp(curr4->val->pName ,name)==0){
+			
 			return curr4;
 		}
 		
-		next_ll(curr4);
-	}while(curr4 != tail4);
+		error = next_ll(curr4);
+	}while(curr4 != head4 && error == 0);
 
 	curr5 = head5;
 	do{ 
-		if(curr5->val->pName == name){
+		if(strcmp(curr5->val->pName ,name)==0){
 			return curr5;
 		}
 		
-		next_ll(curr5);	
-	}while(curr5 != tail5);
+		error = next_ll(curr5);	
+	}while(curr5 != head5 && error == 0);
 	
 	curr6 = head6;
 	do{ 
-		if(curr6->val->pName == name){
+		if(strcmp(curr6->val->pName ,name)==0){
 			return curr6;
 		}
 		
-		next_ll(curr6);	
-	}while(curr6 != tail6);
+		error = next_ll(curr6);	
+	}while(curr6 != head6 && error == 0);
 	
 	curr7 = head7;
 	do{ 
-		if(curr7->val->pName == name){
+		if(strcmp(curr7->val->pName ,name)==0){
 			return curr7;
 		}
 		
-		next_ll(curr7);	
-	}while(curr7 != tail7);
+		error = next_ll(curr7);	
+	}while(curr7 != head7 && error == 0);
 	
 	return NULL;
 	
 	
-}//end find_LL
+}//end find_PCB
 
 /**
 	Procedure: insert_pcb
@@ -1821,7 +1842,7 @@ LLitem* find_ll(char name []){
 
 	Globals: curr4, head4, tail4, curr5, head5, tail5, curr6, head6, tail6, curr7, head7, tail7, READY, BLOCKED, SUSREADY, SUSBLOCKED
 
-	Errors: Invalid Integer Queue Value, Invalid PCB Pointer Value
+	Errors: Invalid Integer Queue Value, Invalid PCB Pointer Value, -130
 **/
 int insert_pcb(int queueInt,PCBitem * PCBtemp){
 	LLitem * tempHead, *tempTail, *tempCurr,*temp;
@@ -1843,7 +1864,7 @@ int insert_pcb(int queueInt,PCBitem * PCBtemp){
 		tempCurr = curr7;
 	}
 	else{
-		printf("ERROR");
+		errorCheck(-130);
 		return -1;
 	}
 	
@@ -1948,7 +1969,7 @@ int insert_pcb(int queueInt,PCBitem * PCBtemp){
 		curr7 = tempCurr;
 	}
 	else{
-		printf("ERROR");
+		errorCheck(-130);
 		return -1;
 	}
 	return 0;
@@ -1996,7 +2017,7 @@ int remove_pcb(PCBitem * PCBtemp){
 		tempTail = NULL;
 	}
 	else if(tempHead == NULL){
-		printf("Error no items\n");
+		//printf("Error no items\n");
 		return -1;
 	}
 	else{
@@ -2036,7 +2057,7 @@ int remove_pcb(PCBitem * PCBtemp){
 		head7 = tempHead;
 		tail7 =  tempTail;
 		curr7 = tempCurr;
-	}
+	}else if (PCBtemp == NULL){}
 	else{
 		printf("ERROR");
 		return -1;
@@ -2057,7 +2078,7 @@ int remove_pcb(PCBitem * PCBtemp){
 
 	Globals: READY
 
-	Errors: None
+	Errors: -125 through -128
 **/
 void handler_create_pcb(){
 	PCBitem * temp;
@@ -2068,34 +2089,35 @@ void handler_create_pcb(){
 	printf("Enter the PCB name(max 20 characters): \n");
 	Buffer = keyboardInput(0);
 	pointer2Str(Buffer,inputName);
-	printf("Enter the PCB class value(1 through 7): \n");
+	printf("Enter the PCB class value(1 through 2): \n");
 	Buffer = keyboardInput(0);
 	inputClass =pointer2Int(Buffer);
-	printf("Enter the PCB priority: \n");
+	printf("Please enter a number between -128 & +127 for Priority:\n");
 	Buffer = keyboardInput(0);
 	inputPriority =pointer2Int(Buffer);
 	
 	
 	if(sizeOfArray(inputName) < 8){
-		printf("PCB Name is not long enough.\n");
+		error = errorCheck(-125);
 	}//end if
 	else if(sizeOfArray(inputName) >20){
-		printf("PCB Name is too long.\n");
+		error = errorCheck(-125);
 	}
 	else if(find_pcb(inputName) != NULL){
-		printf("PCB Name is Invalid. PCB Name already exists.\n");
+		error = errorCheck(-126);
 	}
 	else if((inputPriority > 127) || (inputPriority < -128)){			// Check that Priority between -128 and +127
-		printf("PCB Priority is Invalid.\n");
+		error = errorCheck(-127);
 	}//end if
 	
-	else if((inputClass > 7) || (inputClass < 1)){						// Check that Class is valid
-		printf("PCB Class is Invalid.\n");
+	else if((inputClass > 2) || (inputClass < 1)){						// Check that Class is valid
+		error = errorCheck(-128);
 	}//end if
-	else{
+	else if(error ==0){
 	temp = setup_pcb(inputName,inputPriority,inputClass);
 	error = insert_pcb(READY, temp);
 	}
+	
 }
 
 /**
@@ -2111,7 +2133,7 @@ void handler_create_pcb(){
 
 	Globals: bufSizeDefined
 
-	Errors: None
+	Errors: -125
 **/
 void handler_delete_pcb(){
 	PCBitem * temp = NULL;
@@ -2121,14 +2143,14 @@ void handler_delete_pcb(){
 	Buffer = keyboardInput(0);
 	pointer2Str(Buffer,inputName);
 	if(inputName== NULL){
-		printf("PCB Name is Invalid.\n");
+		errorCheck(-125);
 		
 	}
 	else if(sizeOfArray(inputName)>20){
-		printf("PCB Name is Invalid. PCB Name is too long.\n");
+		errorCheck(-125);
 	}
 	else if(sizeOfArray(inputName)<8){
-		printf("PCB Name is Invalid. PCB Name is too short.\n");
+		errorCheck(-125);
 	}
 	else{
 		temp = find_pcb(inputName);					
@@ -2175,7 +2197,7 @@ void handler_block(){
 	int charCount = 0;													//Number of Characters in Process Name
 
 	// Get PCB name from the user- check that the PCB with that name exists (Make sure that name is valid & exists!)
-	printf("Please enter the name of the PCB to block: ");
+	printf("Please enter the name of the PCB to block(max 20, min 8 characters):\n");
 	tempPtr = keyboardInput(0);											//Gets process name from User
 	pointer2Str(tempPtr,tempBuff);										//Convert Character Pointer to Character String
 	charCount = sizeOfArray(tempBuff);									//Get Name Size
@@ -2244,7 +2266,7 @@ void handler_unblock(){
 	int charCount = 0;													//Number of Characters in Process Name
 
 	// Get PCB name from the user- check that the PCB with that name exists (Make sure that name is valid & exists!)
-	printf("Please enter the name of the PCB to block(max 20, min 8 characters):\n");
+	printf("Please enter the name of the PCB to unblock(max 20, min 8 characters):\n");
 	tempPtr = keyboardInput(0);											//Gets process name from User
 	pointer2Str(tempPtr,tempBuff);										//Convert Character Pointer to Character String
 	charCount = sizeOfArray(tempBuff);									//Get Name Size
@@ -2310,7 +2332,7 @@ void handler_suspend(){
 	int charCount = 0;													//Number of Characters in Process Name
 
 	// Get PCB name from the user- check that the PCB with that name exists (Make sure that name is valid & exists!)
-	printf("Please enter the name of the PCB to block: ");
+	printf("Please enter the name of the PCB to suspend(max 20, min 8 characters):\n ");
 	tempPtr = keyboardInput(0);											//Gets process name from User
 	pointer2Str(tempPtr,tempBuff);										//Convert Character Pointer to Character String
 	charCount = sizeOfArray(tempBuff);									//Get Name Size
@@ -2376,7 +2398,7 @@ char tempBuff[bufSizeDefined] = {0};												//Temporary Input Buffer
 	int charCount = 0;													//Number of Characters in Process Name
 
 	// Get PCB name from the user- check that the PCB with that name exists (Make sure that name is valid & exists!)
-	printf("Please enter the name of the PCB to block: ");
+	printf("Please enter the name of the PCB to resume(max 20, min 8 characters):\n");
 	tempPtr = keyboardInput(0);											//Gets process name from User
 	pointer2Str(tempPtr,tempBuff);										//Convert Character Pointer to Character String
 	charCount = sizeOfArray(tempBuff);									//Get Name Size
@@ -2443,7 +2465,7 @@ void handler_set_priority(){
 	int newPriority = 0;											//New Priority value
 	
 	//Get PCB name
-	printf("Please enter the name of the PCB to Set the Priority: ");
+	printf("Please enter the name of the PCB to Set the Priority(max 20, min 8 characters):\n");
 	tempPtr = keyboardInput(0);										//Gets process name from User
 	pointer2Str(tempPtr,tempBuff);									//Convert Character Pointer to Character String
 	charCount = sizeOfArray(tempBuff);									//Get Name Size
@@ -2453,7 +2475,7 @@ void handler_set_priority(){
 		if(tempPCB != NULL){										//Check that the PCB Exists
 			
 			//Get New Priority from User
-			printf("Please enter a number between -128 & +127 to set the new Priority: ");
+			printf("Please enter a number between -128 & +127 to set the new Priority:\n");
 			tempPtr = keyboardInput(0);									//Gets process name from User
 			newPriority = pointer2Int(tempPtr);							//Convert Character Pointer to Int
 			
@@ -2591,4 +2613,5 @@ void handler_show(int queueInt){
 	if(queueInt >7 ||queueInt <0 || queueInt ==1|| queueInt ==2|| queueInt ==3){
 		printf("ERROR in show");
 	}
+	printf("\n");
 }
