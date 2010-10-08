@@ -45,8 +45,25 @@
 			storeHistory
 			printInterrupt
 			
-			
-			
+
+			pointer2Str
+			pointer2Int
+			allocate_pcb
+			free_pcb
+			setup_pcb
+			find_pcb
+			find_ll
+			insert_pcb
+			remove_pcb
+			handler_create_pcb
+			handler_delete_pcb
+			handler_block
+			handler_unblock
+			handler_suspend
+			handler_resume
+			handler_set_priority
+			handler_show_pcb
+			handler_show
 			
 ************************************************************************
 
