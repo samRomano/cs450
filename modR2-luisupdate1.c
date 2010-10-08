@@ -1360,10 +1360,22 @@ void copyPtr(char *userInp, char *userCom){
 
 
 
+/********* Module R2 Commands ********/
+/**
+	Procedure: printInterrupt
 
+	Purpose: Paginates large outputs
 
+	Parameters: None
 
+	Return value: None
 
+	Calls: sys_req
+
+	Globals: bufSize
+
+	Errors: None
+**/
 void printInterrupt(){
 	char * Good = NULL;
 	printConstant ++;
@@ -1374,6 +1386,21 @@ void printInterrupt(){
 	}
 }
 
+/**
+	Procedure: pointer2Str
+
+	Purpose: Changes a Pointer Variable to a String Variable
+
+	Parameters: Buffer, inputStr
+
+	Return value: Integer Error Code; Zero If Ok
+
+	Calls: sizeOfPointer
+
+	Globals: bufSize
+
+	Errors: Invalid Pointer Value, Invalid String Value
+**/
 int pointer2Str(char * Buffer,char * inputStr){
 	int BufferSize;
 	int i = 0;
@@ -1399,6 +1426,21 @@ int pointer2Str(char * Buffer,char * inputStr){
 	}	
 }
 
+/**
+	Procedure: pointer2Int
+
+	Purpose: Changes a Pointer Variable to an Integer Variable
+
+	Parameters: Buffer
+
+	Return value: Integer Value
+
+	Calls: sizeOfPointer
+
+	Globals: None
+
+	Errors: Invalid Pointer Value
+**/
 int pointer2Int(char * Buffer){
 	int BufferSize;
 	int i = 0;
@@ -1427,6 +1469,21 @@ int pointer2Int(char * Buffer){
 	}	
 }
 
+/**
+	Procedure: next_ll
+
+	Purpose: Sets current Linked List structure to next Linked List structure
+
+	Parameters: curr
+
+	Return value: Integer Error Code; Zero If Ok
+
+	Calls: None
+
+	Globals: None
+
+	Errors: Invalid Linked List Structure
+**/
 int next_ll(LLitem * curr){
 	if(curr->next != NULL){
 		curr = curr->next;
@@ -1435,6 +1492,21 @@ int next_ll(LLitem * curr){
 	return -1;
 }
 
+/**
+	Procedure: allocate_pcb
+
+	Purpose: Allocates Memory for a new PCB structure
+
+	Parameters: None
+
+	Return value: PCB Pointer Value
+
+	Calls: sys_alloc_mem
+
+	Globals: STACKSIZE
+
+	Errors: None
+**/
 PCBitem * allocate_pcb(){
 	PCBitem * newPCB = NULL;										 //Creates New PCB Item & Initializes to NULL for Error Checking
 	newPCB =(PCBitem *) sys_alloc_mem(sizeof(PCBitem));   			 //Allocates Memory for New PCB Item
@@ -1447,6 +1519,21 @@ PCBitem * allocate_pcb(){
 	return newPCB;													 //Returns PCB for PCB Pointer
 }//end allocate_PCB
 
+/**
+	Procedure: free_pcb
+
+	Purpose: Frees the Memory Allocated to a PCB structure
+	
+	Parameters: newPCB
+
+	Return value: Integer Error Code; Zero If Ok
+
+	Calls: sys_free_mem, errorCheck
+
+	Globals: None
+
+	Errors: Invalid PCB Pointer Value
+**/
 int free_pcb(PCBitem *newPCB){
 	error = sys_free_mem(newPCB->stackBase);					 //Need to free Stack (a.k.a. Memory associated with base pointer)
 	error = errorCheck(error);
@@ -1454,11 +1541,24 @@ int free_pcb(PCBitem *newPCB){
 	error = sys_free_mem(newPCB);							 	 //Frees Memory Allocated to PCB
 	error = errorCheck(error);
 	
-	
-
 	return error;												 //Returns any error code found
 }//end free_PCBULL
 
+/**
+	Procedure: setup_pcb
+
+	Purpose: Creates and Initializes a new PCB Structure
+
+	Parameters: new_pName, new_pPriority, new_pClass
+
+	Return value: PCB Pointer Value
+
+	Calls: find_pcb, sizeOfArray, allocate_pcb
+
+	Globals: READY
+
+	Errors: Invalid PCB Name, Invalid PCB Priority Value, Invalid PCB Class
+**/
 PCBitem *setup_pcb(char new_pName[], int new_pPriority, int new_pClass){
 	int charCount = 0;												//Number of Characters in Process Name
 	PCBitem *tempPCB;												//Temporary PCB Item
@@ -1504,6 +1604,21 @@ PCBitem *setup_pcb(char new_pName[], int new_pPriority, int new_pClass){
 	}
 }//end setup_PCB
 
+/**
+	Procedure: find_pcb
+
+	Purpose: Locates a PCB Structure
+
+	Parameters: name
+
+	Return value: PCB Pointer Value
+
+	Calls: next_ll
+
+	Globals: curr4, head4, curr5, head5, curr6, head6, curr7, head7, error
+
+	Errors: Invalid PCB Name
+**/
 PCBitem* find_pcb(char name []){
 	printf("google");
 	curr4 = head4;
@@ -1549,6 +1664,21 @@ PCBitem* find_pcb(char name []){
 	
 }//end find_PCB
 
+/**
+	Procedure: find_ll
+
+	Purpose: Locates a Linked List Structure
+
+	Parameters: name
+
+	Return value: Linked List Pointer Value
+
+	Calls: next_ll
+
+	Globals: curr4, head4, curr5, head5, curr6, head6, curr7, head7
+
+	Errors: Invalid PCB Name
+**/
 LLitem* find_ll(char name []){
 
 	curr4 = head4;
@@ -1592,6 +1722,21 @@ LLitem* find_ll(char name []){
 	
 }//end find_LL
 
+/**
+	Procedure: insert_pcb
+
+	Purpose: Inserts a PCB Structure into a chosen Queue
+
+	Parameters: queueInt, PCBtemp
+
+	Return value: Integer Error Code; Zero If Ok
+
+	Calls: next_ll, sys_alloc_mem
+
+	Globals: curr4, head4, tail4, curr5, head5, tail5, curr6, head6, tail6, curr7, head7, tail7, READY, BLOCKED, SUSREADY, SUSBLOCKED
+
+	Errors: Invalid Integer Queue Value, Invalid PCB Pointer Value
+**/
 int insert_pcb(int queueInt,PCBitem * PCBtemp){
 	LLitem * tempHead, *tempTail, *tempCurr,*temp;
 	printf("\n%d", queueInt);
@@ -1729,6 +1874,21 @@ int insert_pcb(int queueInt,PCBitem * PCBtemp){
 	return 0;
 }
 
+/**
+	Procedure: remove_pcb
+
+	Purpose: Removes a PCB Structure from its set Queue
+
+	Parameters: PCBtemp
+
+	Return value: Integer Error Code; Zero If Ok
+
+	Calls: find_ll, sys_free_mem
+
+	Globals: curr4, head4, tail4, curr5, head5, tail5, curr6, head6, tail6, curr7, head7, tail7, READY, BLOCKED, SUSREADY, SUSBLOCKED
+
+	Errors: Invalid PCB Pointer Value
+**/
 int remove_pcb(PCBitem * PCBtemp){
 	LLitem * tempHead, *tempTail, *tempCurr;
 	LLitem *tempP,*tempN;
@@ -1804,6 +1964,21 @@ int remove_pcb(PCBitem * PCBtemp){
 	return 0;
 }
 
+/**
+	Procedure: handler_create_pcb
+
+	Purpose: Creates a new PCB Structure and inserts it into the Ready Queue
+
+	Parameters: None
+
+	Return value: None
+
+	Calls: keyboardInput, pointer2Str, pointer2Int, sizeOfArray, find_pcb, setup_pcb, insert_pcb
+
+	Globals: READY
+
+	Errors: None
+**/
 void handler_create_pcb(){
 	PCBitem * temp;
 	char * Buffer = NULL;
@@ -1841,6 +2016,21 @@ void handler_create_pcb(){
 	}
 }
 
+/**
+	Procedure: handler_delete_pcb
+
+	Purpose: Deletes a defined PCB Structure from its assigned Queue
+
+	Parameters: None
+
+	Return value: None
+
+	Calls: keyboardInput, pointer2Str, sizeOfArray, find_pcb, remove_pcb, free_pcb
+
+	Globals: bufSizeDefined
+
+	Errors: None
+**/
 void handler_delete_pcb(){
 	PCBitem * temp = NULL;
 	char * Buffer = NULL;
@@ -1882,6 +2072,21 @@ void handler_delete_pcb(){
 	}
 }
 
+/**
+	Procedure: handler_block
+
+	Purpose: Blocks a defined PCB Structure
+
+	Parameters: None
+
+	Return value: None
+
+	Calls: keyboardInput, pointer2Str, sizeOfArray, find_pcb, remove_pcb, errorCheck, insert_pcb
+
+	Globals: bufSizeDefined, BLOCKED, SUSBLOCKED, RUNNING, READY, SUSREADY, error
+
+	Errors: None
+**/
 void handler_block(){
 	char tempBuff[bufSizeDefined] = {0};												//Temporary Input Buffer
 	char *tempPtr = NULL;												//Temporary Input Character Pointer for PCB Name
@@ -1936,6 +2141,21 @@ void handler_block(){
 	}//end if
 }//end block
 
+/**
+	Procedure: handler_unblock
+
+	Purpose: Unblocks a blocked PCB Structure
+
+	Parameters: None
+
+	Return value: None
+
+	Calls: keyboardInput, pointer2Str, sizeOfArray, find_pcb, remove_pcb, errorCheck, insert_pcb
+
+	Globals: bufSizeDefined, BLOCKED, SUSBLOCKED, RUNNING, READY, SUSREADY, error
+
+	Errors: None
+**/
 void handler_unblock(){
 	char tempBuff[bufSizeDefined] = {0};												//Temporary Input Buffer
 	char *tempPtr = NULL;												//Temporary Input Character Pointer for PCB Name
@@ -1985,6 +2205,21 @@ void handler_unblock(){
 }//end unblock	
 		}
 
+/**
+	Procedure: handler_suspend
+
+	Purpose: Suspends a defined PCB Structure
+
+	Parameters: None
+
+	Return value: None
+
+	Calls: keyboardInput, pointer2Str, sizeOfArray, find_pcb, remove_pcb, errorCheck, insert_pcb
+
+	Globals: bufSizeDefined, BLOCKED, SUSBLOCKED, RUNNING, READY, SUSREADY, error
+
+	Errors: None
+**/
 void handler_suspend(){
 	char tempBuff[bufSizeDefined] = {0};												//Temporary Input Buffer
 	char *tempPtr = NULL;												//Temporary Input Character Pointer for PCB Name
@@ -2036,7 +2271,21 @@ void handler_suspend(){
 	}//end if
 }//end suspend
 
+/**
+	Procedure: handler_resume
 
+	Purpose: Resumes a suspended PCB Structure
+
+	Parameters: None
+
+	Return value: None
+
+	Calls: keyboardInput, pointer2Str, sizeOfArray, find_pcb, remove_pcb, errorCheck, insert_pcb
+
+	Globals: bufSizeDefined, BLOCKED, SUSBLOCKED, RUNNING, READY, SUSREADY, error
+
+	Errors: None
+**/
 void handler_resume(){
 char tempBuff[bufSizeDefined] = {0};												//Temporary Input Buffer
 	char *tempPtr = NULL;												//Temporary Input Character Pointer for PCB Name
@@ -2088,6 +2337,21 @@ char tempBuff[bufSizeDefined] = {0};												//Temporary Input Buffer
 	}//end if
 }//end resume
 
+/**
+	Procedure: handler_set_priority
+
+	Purpose: Sets a new priority for a defined PCB Structure
+
+	Parameters: None
+
+	Return value: None
+
+	Calls: keyboardInput, pointer2Str, sizeOfArray, find_pcb, remove_pcb, errorCheck, insert_pcb, pointer2Int
+
+	Globals: bufSizeDefined, READY, error
+
+	Errors: None
+**/
 void handler_set_priority(){
 	char tempBuff[bufSizeDefined] = {0};	
 	char *tempPtr = NULL;											//Temporary Input Character Pointer for PCB Name										//Temporary Input Character Pointer for New Priority
@@ -2136,6 +2400,21 @@ void handler_set_priority(){
 	}//end if
 }//end setPriority
 
+/**
+	Procedure: handler_show_pcb
+
+	Purpose: Shows all of the stored information for a defined PCB Structure
+
+	Parameters: None
+
+	Return value: None
+
+	Calls: keyboardInput, pointer2Str, sizeOfArray, find_pcb
+
+	Globals: bufSizeDefined
+
+	Errors: None
+**/
 void handler_show_pcb(){
 	char tempBuff[bufSizeDefined] = {0};	
 	char *tempPtr = NULL;											//Temporary Input Character Pointer for PCB Name											//Temporary Input Character Pointer for New Priority
@@ -2166,6 +2445,21 @@ void handler_show_pcb(){
 	}//end if
 }//end showPCB
 
+/**
+	Procedure: handler_show
+
+	Purpose: Shows all of the stored information for each PCB Structure in one or all queues
+
+	Parameters: queueInt
+
+	Return value: None
+
+	Calls: printInterrupt
+
+	Globals: head4, tail4, head5, tail5, head6, tail6, head7, tail7
+
+	Errors: Invalid Integer Value
+**/
 void handler_show(int queueInt){
 	LLitem * tempCurr;
 	if(queueInt == 0 || queueInt == 4){
