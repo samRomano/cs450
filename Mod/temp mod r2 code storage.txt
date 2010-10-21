@@ -1,0 +1,349 @@
+temp mod r2 code storage
+
+
+
+/**
+	Procedure: handler_block
+
+	Purpose: Blocks a defined PCB Structure
+
+	Parameters: None
+
+	Return value: None
+
+	Calls: keyboardInput, pointer2Str, sizeOfArray, find_pcb, remove_pcb, errorCheck, insert_pcb
+
+	Globals: bufSizeDefined, BLOCKED, SUSBLOCKED, RUNNING, READY, SUSREADY, error
+
+	Errors: None
+**/
+void handler_block(){
+	char tempBuff[bufSizeDefined] = {0};												//Temporary Input Buffer
+	char *tempPtr = NULL;												//Temporary Input Character Pointer for PCB Name
+	PCBitem *tempPCB;													//Temporary PCB Item
+	int charCount = 0;													//Number of Characters in Process Name
+
+	// Get PCB name from the user- check that the PCB with that name exists (Make sure that name is valid & exists!)
+	printf("Please enter the name of the PCB to block: ");
+	tempPtr = keyboardInput(0);											//Gets process name from User
+	pointer2Str(tempPtr,tempBuff);										//Convert Character Pointer to Character String
+	charCount = sizeOfArray(tempBuff);									//Get Name Size
+	
+	if((charCount >= 8 && charCount <=20)){												//Check that Name is Valid (Check to see if at least 8 chars. + Null Terminator)
+		tempPCB = find_pcb(tempBuff);
+		if(tempPCB != NULL){											//Check if Name Exists
+			if(tempPCB->state == BLOCKED){
+				printf("Error: The process is already Blocked.\n");
+			} else if(tempPCB->state == SUSBLOCKED){
+				printf("Error: The process is already Suspended & Blocked.\n");
+			} else{
+				
+				// Should remove the process from the ready queue (by calling remove_PCB)
+				error = remove_pcb(tempPCB);
+				error = errorCheck(error);
+				
+				// Places the process (PCB) in the blocked state
+				// Does not change its suspended status
+				
+				if(tempPCB->state == RUNNING){
+					tempPCB->state = BLOCKED;
+				} else if(tempPCB->state == READY){
+					tempPCB->state = BLOCKED;
+				} else if(tempPCB->state == SUSREADY){
+					tempPCB->state = SUSBLOCKED;
+				}//end if
+				
+				// And place the process in the blocked queue (by calling insert_PCB)
+				error = insert_pcb(tempPCB->state, tempPCB);
+				error = errorCheck(error);
+				
+				// Display appropriate error or success message
+				if(error == 0){
+					printf("The PCB Process has been successfully blocked.\n");
+				}//end if
+				
+			}//end if
+		} else{
+			printf("Process Name does not exist.\n");
+		}//end if
+	} else{
+		printf("Process Name is Invalid. Process Name is not between 8 and 20 characters.\n");
+	}//end if
+}//end block
+
+/**
+	Procedure: handler_unblock
+
+	Purpose: Unblocks a blocked PCB Structure
+
+	Parameters: None
+
+	Return value: None
+
+	Calls: keyboardInput, pointer2Str, sizeOfArray, find_pcb, remove_pcb, errorCheck, insert_pcb
+
+	Globals: bufSizeDefined, BLOCKED, SUSBLOCKED, RUNNING, READY, SUSREADY, error
+
+	Errors: None
+**/
+void handler_unblock(){
+	char tempBuff[bufSizeDefined] = {0};												//Temporary Input Buffer
+	char *tempPtr = NULL;												//Temporary Input Character Pointer for PCB Name
+	PCBitem *tempPCB;													//Temporary PCB Item
+	int charCount = 0;													//Number of Characters in Process Name
+
+	// Get PCB name from the user- check that the PCB with that name exists (Make sure that name is valid & exists!)
+	printf("Please enter the name of the PCB to block(max 20, min 8 characters):\n");
+	tempPtr = keyboardInput(0);											//Gets process name from User
+	pointer2Str(tempPtr,tempBuff);										//Convert Character Pointer to Character String
+	charCount = sizeOfArray(tempBuff);									//Get Name Size
+	
+	if((charCount >= 8 && charCount <=20)){												//Check that Name is Valid (Check to see if at least 8 chars. + Null Terminator)
+		tempPCB = find_pcb(tempBuff);
+		if(tempPCB != NULL){											//Check if Name Exists
+			if(tempPCB->state == READY){
+				printf("Error: The process is ready and already unblocked.\n");
+			}else if(tempPCB->state == SUSREADY){
+				printf("Error: The process is suspended and already unblocked.\n");
+			}else if(tempPCB->state == RUNNING){
+				printf("Error: The process is running and already unblocked.\n");
+			}else{
+				
+				error = remove_pcb(tempPCB);
+				error = errorCheck(error);
+				
+				if(tempPCB->state == BLOCKED){
+					tempPCB->state = READY;
+				}else if(tempPCB->state == SUSBLOCKED){
+					tempPCB->state = SUSREADY;
+				}
+				
+				error = insert_pcb(tempPCB->state, tempPCB);
+				error = errorCheck(error);
+				
+				// Display appropriate error or success message
+				if(error == 0){
+					printf("The PCB Process has been successfully unblocked.\n");
+				}//end if
+				
+			}
+			
+			
+		}else{
+			printf("Process Name is Invalid. No process by that Name was found.\n");
+		}
+	}else{
+		printf("Process Name is Invalid. Process Name is not between 8 and 20 characters.\n");
+	}	
+}
+
+/**
+	Procedure: handler_suspend
+
+	Purpose: Suspends a defined PCB Structure
+
+	Parameters: None
+
+	Return value: None
+
+	Calls: keyboardInput, pointer2Str, sizeOfArray, find_pcb, remove_pcb, errorCheck, insert_pcb
+
+	Globals: bufSizeDefined, BLOCKED, SUSBLOCKED, RUNNING, READY, SUSREADY, error
+
+	Errors: None
+**/
+void handler_suspend(){
+	char tempBuff[bufSizeDefined] = {0};												//Temporary Input Buffer
+	char *tempPtr = NULL;												//Temporary Input Character Pointer for PCB Name
+	PCBitem *tempPCB;													//Temporary PCB Item
+	int charCount = 0;													//Number of Characters in Process Name
+
+	// Get PCB name from the user- check that the PCB with that name exists (Make sure that name is valid & exists!)
+	printf("Please enter the name of the PCB to block: ");
+	tempPtr = keyboardInput(0);											//Gets process name from User
+	pointer2Str(tempPtr,tempBuff);										//Convert Character Pointer to Character String
+	charCount = sizeOfArray(tempBuff);									//Get Name Size
+	
+	if((charCount >= 8 && charCount <=20)){											//Check that Name is Valid (Check to see if at least 8 chars. + Null Terminator)
+		tempPCB = find_pcb(tempBuff);
+		if(tempPCB != NULL){										//Check if Name Exists
+			if(tempPCB->state == RUNNING){
+				printf("Error: Running Processes cannot be Suspended.\n");
+			} else if(tempPCB->state == SUSREADY){
+				printf("Error: The process is already Suspended & Ready.\n");
+			} else if(tempPCB->state == SUSBLOCKED){
+				printf("Error: The process is already Suspended & Blocked.\n");
+			} else{
+				
+				// Should remove the process from the ready queue (by calling remove_PCB)
+				error = remove_pcb(tempPCB);
+				error = errorCheck(error);
+				
+				// Puts the PCB in the suspended state
+				if(tempPCB->state == READY){
+					tempPCB->state = SUSREADY;
+				} else if(tempPCB->state == BLOCKED){
+					tempPCB->state = SUSBLOCKED;
+				}//end if
+				
+				// Might require changing queues (from ready to suspended ready, for example) if 4 queues are used
+				error = insert_pcb(tempPCB->state, tempPCB);
+				error = errorCheck(error);
+				
+				// Display appropriate error or success message
+				if(error == 0){
+					printf("The PCB Process has been successfully suspended.\n");
+				}//end if
+			}//end if
+		} else{
+			printf("Process Name does not exist.\n");
+		}//end if
+	} else{
+		printf("Process Name is Invalid. Process Name is not between 8 and 20 characters.\n");
+	}//end if
+}//end suspend
+
+/**
+	Procedure: handler_resume
+
+	Purpose: Resumes a suspended PCB Structure
+
+	Parameters: None
+
+	Return value: None
+
+	Calls: keyboardInput, pointer2Str, sizeOfArray, find_pcb, remove_pcb, errorCheck, insert_pcb
+
+	Globals: bufSizeDefined, BLOCKED, SUSBLOCKED, RUNNING, READY, SUSREADY, error
+
+	Errors: None
+**/
+void handler_resume(){
+	char tempBuff[bufSizeDefined] = {0};												//Temporary Input Buffer
+	char *tempPtr = NULL;												//Temporary Input Character Pointer for PCB Name
+	PCBitem *tempPCB;													//Temporary PCB Item
+	int charCount = 0;													//Number of Characters in Process Name
+
+	// Get PCB name from the user- check that the PCB with that name exists (Make sure that name is valid & exists!)
+	printf("Please enter the name of the PCB to block: ");
+	tempPtr = keyboardInput(0);											//Gets process name from User
+	pointer2Str(tempPtr,tempBuff);										//Convert Character Pointer to Character String
+	charCount = sizeOfArray(tempBuff);									//Get Name Size
+	
+	if((charCount >= 8 && charCount <=20)){							//Check that Name is Valid (Check to see if at least 8 chars. + Null Terminator)
+		tempPCB = find_pcb(tempBuff);
+		if(tempPCB != NULL){										//Check if Name Exists
+			if(tempPCB->state == RUNNING){
+				printf("Error: There is no need to resume an already running process.\n");
+			} else if(tempPCB->state == READY){
+				printf("Error: This process is READY but not suspended.\n");
+			} else if(tempPCB->state == BLOCKED){
+				printf("Error: This process is Blocked but not suspended.\n");
+			} else{
+				
+				// Should remove the process from the SUSREADY or SUSBLOCKED queue (by calling remove_PCB)
+				error = remove_pcb(tempPCB);
+				error = errorCheck(error);
+				
+				// Puts the PCB in the unsuspended state
+				if(tempPCB->state == SUSREADY){
+					tempPCB->state = READY;
+				} else if(tempPCB->state == SUSBLOCKED){
+					tempPCB->state = BLOCKED;
+				}//end if
+				
+				// Might require changing queues (from ready to suspended ready, for example) if 4 queues are used
+				error = insert_pcb(tempPCB->state, tempPCB);
+				error = errorCheck(error);
+				
+				// Display appropriate error or success message
+				if(error == 0){
+					printf("The PCB Process has been successfully resumed.\n");
+				}//end if
+			}//end if
+		}else{
+			printf("Process Name does not exist.\n");
+		}//end if
+	}else{
+		printf("Process Name is Invalid. Process Name is not between 8 and 20 characters.\n");
+	}//end if
+}//end resume
+
+/**
+	Procedure: handler_set_priority
+
+	Purpose: Sets a new priority for a defined PCB Structure
+
+	Parameters: None
+
+	Return value: None
+
+	Calls: keyboardInput, pointer2Str, sizeOfArray, find_pcb, remove_pcb, errorCheck, insert_pcb, pointer2Int
+
+	Globals: bufSizeDefined, READY, error
+
+	Errors: None
+**/
+void handler_set_priority(){
+	char tempBuff[bufSizeDefined] = {0};	
+	char *tempPtr = NULL;											//Temporary Input Character Pointer for PCB Name										//Temporary Input Character Pointer for New Priority
+	PCBitem *tempPCB;												//Temporary PCB Item
+	int charCount = 0;												//Number of Characters in Process Name
+	int newPriority = 0;											//New Priority value
+	
+	//Get PCB name
+	printf("Please enter the name of the PCB to Set the Priority: ");
+	tempPtr = keyboardInput(0);										//Gets process name from User
+	pointer2Str(tempPtr,tempBuff);									//Convert Character Pointer to Character String
+	charCount = sizeOfArray(tempBuff);									//Get Name Size
+	
+	if((charCount >= 8 && charCount <=20)){													//Check that Name is Valid (Check to see if at least 8 chars. + Null Terminator)
+		tempPCB = find_pcb(tempBuff);
+		if(tempPCB != NULL){										//Check that the PCB Exists
+			
+			//Get New Priority from User
+			printf("Please enter a number between -128 & +127 to set the new Priority: ");
+			tempPtr = keyboardInput(0);									//Gets process name from User
+			newPriority = pointer2Int(tempPtr);							//Convert Character Pointer to Int
+			
+			
+			if((newPriority >= -128) || (newPriority <= 127)){		//Check that the new priority is valid (-128 to 127)
+				tempPCB->priority = newPriority;						//Set new PCB Priority
+				
+				//If the PCB is in the ready state, you will need to change the position of the PCB in the queue based upon its new priority
+				if(tempPCB->state == READY){
+					error = remove_pcb(tempPCB);						//Remove PCB from Ready Queue
+					error = errorCheck(error);							//Perform Error Check
+					error = insert_pcb(tempPCB->state, tempPCB);						//Insert PCB into Ready Queue (so as to adjust for new Priority)
+					error = errorCheck(error);							//Perform Error Check
+				}//end if
+			}//end if
+			
+			//Display appropriate error or success message.
+			if(error == 0){
+				printf("The PCB Process has been successfully changed.\n");
+			}//end if
+			
+		} else{
+			printf("Process Name does not exist.\n");
+		}//end if
+	} else{
+		printf("Process Name is Invalid. Process Name is not between 8 and 20 characters.\n");
+	}//end if
+}//end setPriority
+
+/**
+	Procedure: handler_show_pcb
+
+	Purpose: Shows all of the stored information for a defined PCB Structure
+
+	Parameters: None
+
+	Return value: None
+
+	Calls: keyboardInput, pointer2Str, sizeOfArray, find_pcb
+
+	Globals: bufSizeDefined
+
+	Errors: None
+**/

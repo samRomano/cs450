@@ -1,0 +1,397 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_MOD_BY	Bostjan Mihoric	/ccompletion@gmail.com/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	/unofficial modification/
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.8	/unofficial modification/
+APP	modR2.h	48;"	macro
+BASE_MASK	MPX_SUPT.H	100;"	macro
+BLOCKED	modR2.h	52;"	macro
+Buffer	MODR1.C	1038;"	local
+Buffer	MODR1.C	734;"	local
+Buffer	MODR1.C	856;"	local
+Buffer	modR2.c	659;"	local
+Buffer	modR2.c	713;"	local
+Buffer2	MODR1.C	1039;"	local
+BufferArray	MODR1.C	857;"	local
+BufferSize	MODR1.C	1118;"	local
+BufferSize	modR2.c	119;"	local
+BufferSize	modR2.c	79;"	local
+CLEAR	MPX_SUPT.H	87;"	macro
+COM_PORT	MPX_SUPT.H	95;"	macro
+ERR_SUP_DATNCH	MPX_SUPT.H	67;"	macro
+ERR_SUP_DIRCLS	MPX_SUPT.H	73;"	macro
+ERR_SUP_DIRNOP	MPX_SUPT.H	70;"	macro
+ERR_SUP_DIROPN	MPX_SUPT.H	69;"	macro
+ERR_SUP_FILINV	MPX_SUPT.H	76;"	macro
+ERR_SUP_FILNFD	MPX_SUPT.H	75;"	macro
+ERR_SUP_FRFAIL	MPX_SUPT.H	65;"	macro
+ERR_SUP_INVDAT	MPX_SUPT.H	66;"	macro
+ERR_SUP_INVDEV	MPX_SUPT.H	59;"	macro
+ERR_SUP_INVDIR	MPX_SUPT.H	68;"	macro
+ERR_SUP_INVHAN	MPX_SUPT.H	81;"	macro
+ERR_SUP_INVMEM	MPX_SUPT.H	64;"	macro
+ERR_SUP_INVOPC	MPX_SUPT.H	60;"	macro
+ERR_SUP_INVPOS	MPX_SUPT.H	61;"	macro
+ERR_SUP_LDADDR	MPX_SUPT.H	78;"	macro
+ERR_SUP_LDFAIL	MPX_SUPT.H	74;"	macro
+ERR_SUP_MFREE	MPX_SUPT.H	80;"	macro
+ERR_SUP_NAMLNG	MPX_SUPT.H	72;"	macro
+ERR_SUP_NOENTR	MPX_SUPT.H	71;"	macro
+ERR_SUP_NOMEM	MPX_SUPT.H	79;"	macro
+ERR_SUP_PROGSZ	MPX_SUPT.H	77;"	macro
+ERR_SUP_RDFAIL	MPX_SUPT.H	62;"	macro
+ERR_SUP_WRFAIL	MPX_SUPT.H	63;"	macro
+EXIT	MPX_SUPT.H	89;"	macro
+FALSE	MPX_SUPT.H	51;"	macro
+GOTOXY	MPX_SUPT.H	88;"	macro
+Good	MODR1.C	1264;"	local
+HEADER_SIZE	MPX_SUPT.c	850;"	macro	file:
+IDLE	MPX_SUPT.H	84;"	macro
+LLitem	modR2.h	88;"	typedef
+MAX_ALLOC	MPX_SUPT.c	91;"	macro	file:
+MAX_PATH_SIZE	MPX_SUPT.c	96;"	macro	file:
+MAX_XPOS	MPX_SUPT.c	93;"	macro	file:
+MAX_YPOS	MPX_SUPT.c	94;"	macro	file:
+MODULE_F	MPX_SUPT.H	115;"	macro
+MODULE_O1	MPX_SUPT.H	107;"	macro
+MODULE_O2	MPX_SUPT.H	108;"	macro
+MODULE_O3	MPX_SUPT.H	109;"	macro
+MODULE_O4	MPX_SUPT.H	110;"	macro
+MODULE_O5	MPX_SUPT.H	111;"	macro
+MODULE_O6	MPX_SUPT.H	112;"	macro
+MODULE_O7	MPX_SUPT.H	113;"	macro
+MODULE_O8	MPX_SUPT.H	114;"	macro
+MODULE_R1	MPX_SUPT.H	103;"	macro
+MODULE_R2	MPX_SUPT.H	104;"	macro
+MODULE_R3	MPX_SUPT.H	105;"	macro
+MODULE_R4	MPX_SUPT.H	106;"	macro
+MPX_SUPT	MPX_SUPT.H	43;"	macro
+NO_DEV	MPX_SUPT.H	92;"	macro
+NULCH	MPX_SUPT.H	55;"	macro
+NUM_DEVS	MPX_SUPT.H	97;"	macro
+OK	MPX_SUPT.H	58;"	macro
+OPT_MASK	MPX_SUPT.H	101;"	macro
+PCB	modR2.h	60;"	struct
+PCBitem	modR2.h	89;"	typedef
+PRINTER	MPX_SUPT.H	94;"	macro
+READ	MPX_SUPT.H	85;"	macro
+READY	modR2.h	51;"	macro
+RESET	MPX_SUPT.H	53;"	macro
+RUNNING	modR2.h	50;"	macro
+SET	MPX_SUPT.H	52;"	macro
+STACKSIZE	modR2.h	55;"	macro
+SUSBLOCKED	modR2.h	54;"	macro
+SUSREADY	modR2.h	53;"	macro
+SYSTEM	modR2.h	47;"	macro
+TERMINAL	MPX_SUPT.H	93;"	macro
+TRUE	MPX_SUPT.H	50;"	macro
+Temp	MODR1.C	1042;"	local
+Temp	MODR1.C	1119;"	local
+VEC_ADDR	MPX_SUPT.c	89;"	macro	file:
+WRITE	MPX_SUPT.H	86;"	macro
+WordSize	MODR1.C	1041;"	local
+WordSize	MODR1.C	1118;"	local
+addr	MPX_SUPT.c	503;"	local
+addr_alig	MPX_SUPT.c	506;"	local
+address	MPX_SUPT.c	105;"	typedef	file:
+aligned	MPX_SUPT.c	136;"	member	struct:__anon1	file:
+alloc_ix	MPX_SUPT.c	138;"	variable	file:
+alloc_table	MPX_SUPT.c	137;"	variable	file:
+allocate_pcb	modR2.c	185;"	function
+allocate_pcb	modR2.h	107;"	prototype
+bufArray	MODR1.C	73;"	variable
+bufSize	MODR1.C	70;"	variable
+bufSizeDefined	modR1.h	56;"	macro
+bufSizeDefined	modR2.h	56;"	macro
+buf_p	MPX_SUPT.c	110;"	member	struct:params	file:
+byte	MPX_SUPT.c	102;"	typedef	file:
+change_prompt	MODR1.C	1001;"	function
+change_prompt	modR1.h	116;"	prototype
+charCount	modR2.c	1037;"	local
+charCount	modR2.c	1100;"	local
+charCount	modR2.c	240;"	local
+charCount	modR2.c	770;"	local
+charCount	modR2.c	839;"	local
+charCount	modR2.c	905;"	local
+charCount	modR2.c	971;"	local
+cmpP2S	MODR1.C	1117;"	function
+cmpP2S	modR1.h	120;"	prototype
+code_size	MPX_SUPT.c	868;"	local
+comDone	MODR1.C	65;"	variable
+com_hand	MPX_SUPT.c	131;"	variable	file:
+commandCleanup	MODR1.C	313;"	function
+commandCleanup	modR1.h	75;"	prototype
+commandHandler	MODR1.C	122;"	function
+commandHandler	modR1.h	66;"	prototype
+copyPtr	MODR1.C	1234;"	function
+copyPtr	modR1.h	131;"	prototype
+count_p	MPX_SUPT.c	111;"	member	struct:params	file:
+cp	MPX_SUPT.c	765;"	local
+curr4	modR2.c	56;"	variable
+curr5	modR2.c	57;"	variable
+curr6	modR2.c	58;"	variable
+curr7	modR2.c	59;"	variable
+currentFile	MODR1.C	858;"	local
+current_path	MPX_SUPT.c	123;"	variable	file:
+data_size	MPX_SUPT.c	869;"	local
+date	MODR1.C	707;"	local
+date	MODR1.C	821;"	local
+date_rec	MPX_SUPT.H	128;"	typedef
+day	MODR1.C	736;"	local
+day	MPX_SUPT.H	126;"	member	struct:__anon3
+device_id	MPX_SUPT.c	109;"	member	struct:params	file:
+displayClosing	MODR1.C	294;"	function
+displayClosing	modR1.h	72;"	prototype
+displayWelcome	MODR1.C	275;"	function
+displayWelcome	modR1.h	69;"	prototype
+docall	MPX_SUPT.c	314;"	local
+err	MPX_SUPT.c	763;"	local
+errcode	MPX_SUPT.c	870;"	local
+errcode	MPX_SUPT.c	952;"	local
+error	MODR1.C	68;"	variable
+error	MODR1.C	860;"	local
+errorCheck	MODR1.C	416;"	function
+errorCheck	modR1.h	79;"	prototype
+exeAddress	modR2.h	72;"	member	struct:PCB
+file_block	MPX_SUPT.c	125;"	variable	file:
+file_name	MPX_SUPT.c	859;"	local
+file_name	MPX_SUPT.c	959;"	local
+file_p	MPX_SUPT.c	864;"	local
+file_size	MPX_SUPT.c	866;"	local
+filename	MPX_SUPT.c	762;"	local
+find_ll	modR2.c	360;"	function
+find_ll	modR2.h	123;"	prototype
+find_pcb	modR2.c	299;"	function
+find_pcb	modR2.h	119;"	prototype
+flag	MODR1.C	1043;"	local
+flag	MODR1.C	1120;"	local
+flag	MODR1.C	738;"	local
+flag	MODR1.C	927;"	local
+flag	MPX_SUPT.H	121;"	typedef
+free_addr	MPX_SUPT.c	574;"	local
+free_ix	MPX_SUPT.c	575;"	local
+free_pcb	modR2.c	212;"	function
+free_pcb	modR2.h	111;"	prototype
+handler_block	modR2.c	766;"	function
+handler_block	modR2.h	140;"	prototype
+handler_create_pcb	modR2.c	657;"	function
+handler_create_pcb	modR2.h	137;"	prototype
+handler_delete_pcb	modR2.c	711;"	function
+handler_delete_pcb	modR2.h	134;"	prototype
+handler_display_mpx	MODR1.C	855;"	function
+handler_display_mpx	modR1.h	103;"	prototype
+handler_get_date	MODR1.C	705;"	function
+handler_get_date	modR1.h	96;"	prototype
+handler_help	MODR1.C	559;"	function
+handler_help	modR1.h	85;"	prototype
+handler_help_function	MODR1.C	605;"	function
+handler_help_function	modR1.h	88;"	prototype
+handler_resume	modR2.c	967;"	function
+handler_resume	modR2.h	149;"	prototype
+handler_set_date	MODR1.C	733;"	function
+handler_set_date	modR1.h	100;"	prototype
+handler_set_priority	modR2.c	1033;"	function
+handler_set_priority	modR2.h	152;"	prototype
+handler_show	modR2.c	1140;"	function
+handler_show	modR2.h	158;"	prototype
+handler_show_pcb	modR2.c	1096;"	function
+handler_show_pcb	modR2.h	155;"	prototype
+handler_suspend	modR2.c	901;"	function
+handler_suspend	modR2.h	146;"	prototype
+handler_terminate_mpx	MODR1.C	926;"	function
+handler_terminate_mpx	modR1.h	106;"	prototype
+handler_unblock	modR2.c	835;"	function
+handler_unblock	modR2.h	143;"	prototype
+handler_version	MODR1.C	679;"	function
+handler_version	modR1.h	92;"	prototype
+head4	modR2.c	56;"	variable
+head5	modR2.c	57;"	variable
+head6	modR2.c	58;"	variable
+head7	modR2.c	59;"	variable
+header	MPX_SUPT.c	862;"	local
+header_size	MPX_SUPT.c	867;"	local
+historyCounter	MODR1.C	77;"	variable
+historyList	MODR1.C	74;"	variable
+historyQueue_Head	MODR1.C	75;"	variable
+historyQueue_Tail	MODR1.C	76;"	variable
+historySize	modR1.h	54;"	macro
+i	MODR1.C	1003;"	local
+i	MODR1.C	1044;"	local
+i	MODR1.C	1121;"	local
+i	MODR1.C	1180;"	local
+i	MODR1.C	1207;"	local
+i	MODR1.C	1236;"	local
+i	MODR1.C	740;"	local
+i	MODR1.C	860;"	local
+i	modR2.c	120;"	local
+i	modR2.c	80;"	local
+inputClass	modR2.c	661;"	local
+inputInt	modR2.c	121;"	local
+inputName	modR2.c	660;"	local
+inputName	modR2.c	714;"	local
+inputPriority	modR2.c	662;"	local
+inregs	MPX_SUPT.c	967;"	local
+insert_pcb	modR2.c	421;"	function
+insert_pcb	modR2.h	127;"	prototype
+ix	MPX_SUPT.c	315;"	local
+ix_save	MPX_SUPT.c	502;"	local
+j	MODR1.C	1045;"	local
+j	MODR1.C	859;"	local
+j	modR2.c	122;"	local
+j	modR2.c	81;"	local
+keyboardInput	MODR1.C	1037;"	function
+keyboardInput	modR1.h	113;"	prototype
+leapYear	MODR1.C	739;"	local
+len	MPX_SUPT.c	691;"	local
+len	MPX_SUPT.c	764;"	local
+linkedList	modR2.h	81;"	struct
+loadAddress	modR2.h	71;"	member	struct:PCB
+load_seg	MPX_SUPT.c	963;"	member	struct:__anon2	file:
+longword	MPX_SUPT.c	104;"	typedef	file:
+main	MODR1.C	96;"	function
+memSize	modR2.h	70;"	member	struct:PCB
+mod_code	MPX_SUPT.c	119;"	variable	file:
+month	MODR1.C	735;"	local
+month	MPX_SUPT.H	125;"	member	struct:__anon3
+nameSize	MODR1.C	861;"	local
+newPCB	modR2.c	186;"	local
+newPCB	modR2.c	242;"	local
+newPriority	modR2.c	1038;"	local
+newPrompt	MODR1.C	1002;"	local
+newPromptSize	MODR1.C	1003;"	local
+next	modR2.h	83;"	member	struct:linkedList
+next_ll	modR2.c	162;"	function
+next_ll	modR2.h	103;"	prototype
+norm_off	MPX_SUPT.c	956;"	local
+norm_seg	MPX_SUPT.c	955;"	local
+num_alloc	MPX_SUPT.c	139;"	variable	file:
+num_entries	MPX_SUPT.c	124;"	variable	file:
+num_read	MPX_SUPT.c	865;"	local
+offset	MPX_SUPT.c	504;"	local
+offset	MPX_SUPT.c	954;"	local
+op_code	MPX_SUPT.c	108;"	member	struct:params	file:
+original	MPX_SUPT.c	135;"	member	struct:__anon1	file:
+outregs	MPX_SUPT.c	968;"	local
+pClass	modR2.h	63;"	member	struct:PCB
+pName	modR2.h	62;"	member	struct:PCB
+p_block	MPX_SUPT.c	965;"	local
+param_p	MPX_SUPT.c	313;"	local
+params	MPX_SUPT.c	107;"	struct	file:
+params	MPX_SUPT.c	112;"	typedef	file:
+pointer2Int	modR2.c	118;"	function
+pointer2Int	modR2.h	99;"	prototype
+pointer2Str	modR2.c	78;"	function
+pointer2Str	modR2.h	95;"	prototype
+powInt	modR2.c	123;"	local
+prev	modR2.h	84;"	member	struct:linkedList
+printConstant	MODR1.C	72;"	variable
+printInterrupt	MODR1.C	1263;"	function
+printInterrupt	modR1.h	134;"	prototype
+priority	modR2.h	64;"	member	struct:PCB
+prog_len	MPX_SUPT.c	953;"	local
+prompt	MODR1.C	71;"	variable
+prt_hand	MPX_SUPT.c	130;"	variable	file:
+queueInt	MODR1.C	318;"	local
+rc	MPX_SUPT.c	312;"	local
+reloc_seg	MPX_SUPT.c	964;"	member	struct:__anon2	file:
+rem	MPX_SUPT.c	507;"	local
+remove_pcb	modR2.c	567;"	function
+remove_pcb	modR2.h	131;"	prototype
+res	MPX_SUPT.c	690;"	local
+rp	MPX_SUPT.c	311;"	local
+rval	MPX_SUPT.c	310;"	local
+seg	MPX_SUPT.c	505;"	local
+segregs	MPX_SUPT.c	969;"	local
+setup_pcb	modR2.c	239;"	function
+setup_pcb	modR2.h	115;"	prototype
+sizeOfArray	MODR1.C	1206;"	function
+sizeOfArray	modR1.h	128;"	prototype
+sizeOfPointer	MODR1.C	1179;"	function
+sizeOfPointer	modR1.h	124;"	prototype
+stackBase	modR2.h	67;"	member	struct:PCB
+stackTop	modR2.h	66;"	member	struct:PCB
+state	modR2.h	65;"	member	struct:PCB
+storeHistory	modR1.h	82;"	prototype
+store_pName	modR2.c	243;"	local
+sys_alloc_mem	MPX_SUPT.H	157;"	prototype
+sys_alloc_mem	MPX_SUPT.c	499;"	function
+sys_check_program	MPX_SUPT.H	193;"	prototype
+sys_check_program	MPX_SUPT.c	852;"	function
+sys_close_dir	MPX_SUPT.H	189;"	prototype
+sys_close_dir	MPX_SUPT.c	824;"	function
+sys_date	MPX_SUPT.c	120;"	variable	file:
+sys_exit	MPX_SUPT.H	139;"	prototype
+sys_exit	MPX_SUPT.c	213;"	function
+sys_free_mem	MPX_SUPT.H	162;"	prototype
+sys_free_mem	MPX_SUPT.c	571;"	function
+sys_get_date	MPX_SUPT.H	166;"	prototype
+sys_get_date	MPX_SUPT.c	625;"	function
+sys_get_entry	MPX_SUPT.H	182;"	prototype
+sys_get_entry	MPX_SUPT.c	755;"	function
+sys_init	MPX_SUPT.H	135;"	prototype
+sys_init	MPX_SUPT.c	162;"	function
+sys_load_program	MPX_SUPT.H	201;"	prototype
+sys_load_program	MPX_SUPT.c	945;"	function
+sys_open_dir	MPX_SUPT.H	177;"	prototype
+sys_open_dir	MPX_SUPT.c	686;"	function
+sys_req	MPX_SUPT.H	149;"	prototype
+sys_req	MPX_SUPT.c	303;"	function
+sys_set_date	MPX_SUPT.H	171;"	prototype
+sys_set_date	MPX_SUPT.c	655;"	function
+sys_set_vec	MPX_SUPT.H	143;"	prototype
+sys_set_vec	MPX_SUPT.c	244;"	function
+sysc_hand	MPX_SUPT.c	128;"	variable	file:
+tail4	modR2.c	56;"	variable
+tail5	modR2.c	57;"	variable
+tail6	modR2.c	58;"	variable
+tail7	modR2.c	59;"	variable
+temp	modR2.c	422;"	local
+temp	modR2.c	658;"	local
+temp	modR2.c	712;"	local
+tempBuff	modR2.c	1034;"	local
+tempBuff	modR2.c	1097;"	local
+tempBuff	modR2.c	767;"	local
+tempBuff	modR2.c	836;"	local
+tempBuff	modR2.c	902;"	local
+tempBuff	modR2.c	968;"	local
+tempCurr	MODR1.C	317;"	local
+tempCurr	modR2.c	1141;"	local
+tempCurr	modR2.c	422;"	local
+tempCurr	modR2.c	568;"	local
+tempHead	modR2.c	422;"	local
+tempHead	modR2.c	568;"	local
+tempN	modR2.c	569;"	local
+tempP	modR2.c	569;"	local
+tempPCB	modR2.c	1036;"	local
+tempPCB	modR2.c	1099;"	local
+tempPCB	modR2.c	241;"	local
+tempPCB	modR2.c	769;"	local
+tempPCB	modR2.c	838;"	local
+tempPCB	modR2.c	904;"	local
+tempPCB	modR2.c	970;"	local
+tempPtr	modR2.c	1035;"	local
+tempPtr	modR2.c	1098;"	local
+tempPtr	modR2.c	768;"	local
+tempPtr	modR2.c	837;"	local
+tempPtr	modR2.c	903;"	local
+tempPtr	modR2.c	969;"	local
+tempTail	modR2.c	422;"	local
+tempTail	modR2.c	568;"	local
+temp_path	MPX_SUPT.c	689;"	local
+trm_hand	MPX_SUPT.c	129;"	variable	file:
+userAns	MODR1.C	928;"	local
+userCom_Size	MODR1.C	1235;"	local
+userCommand	MODR1.C	67;"	variable
+userCommandSize	MODR1.C	123;"	local
+userInput	MODR1.C	66;"	variable
+val	modR2.h	82;"	member	struct:linkedList
+vec_p	MPX_SUPT.c	216;"	local
+vec_p	MPX_SUPT.c	248;"	local
+vec_save	MPX_SUPT.c	118;"	variable	file:
+version1	MODR1.C	63;"	variable
+version2	MODR1.C	64;"	variable
+word	MPX_SUPT.c	103;"	typedef	file:
+year	MODR1.C	737;"	local
+year	MPX_SUPT.H	127;"	member	struct:__anon3
